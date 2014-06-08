@@ -1,4 +1,5 @@
 #include "ofApp.h"
+#include <iterator>
 
 //--------------------------------------------------------------
 void ofApp::setup(){	
@@ -7,9 +8,13 @@ void ofApp::setup(){
     robotParticles_ = new Particles(100);
     robotParticles_->scatterParticles(windowX_, windowY_);
 
+    // Setup mapSegs_ path parameters
+    mapSegs_.setFilled(false);
+    mapSegs_.setStrokeColor(ofColor::lightSlateGrey);
+    mapSegs_.setStrokeWidth(5);
     // Create a map with one feature
-    Map * theMap = new Map();
-    theMap->addFeature("roomOutline.txt");
+    theMap_ = new Map();
+    theMap_->addFeature("roomOutline.txt");
     
 }
 
@@ -19,7 +24,7 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-	//ofFill();
+	/*
 	for (size_t eachPart = 0; eachPart < robotParticles_->numParticles_; 
         ++eachPart)
     {
@@ -27,7 +32,19 @@ void ofApp::draw(){
                      robotParticles_->theParticles_[eachPart]->yVal_,
                      robotParticles_->theParticles_[eachPart]->theta_);
     }
-	
+*/
+
+    drawMap();
+    /*
+    ofPath myPath = ofPath();
+    myPath.setFilled(false);
+    myPath.setStrokeColor(ofColor::darkOrchid);
+    myPath.setStrokeWidth(5);
+    myPath.moveTo(100, 100);
+    myPath.lineTo(100,200);
+    myPath.lineTo(200,400);
+    myPath.draw();
+    */
 
 }
 
@@ -45,6 +62,42 @@ void ofApp::mouseReleased(int x, int y, int button)
 
 void ofApp::drawMap()
 {
+    // iterate through list of features
+    // draw each set of points with correct scaling.
+    for (auto featureIter = theMap_->features_.begin(); 
+              featureIter != theMap_->features_.end();
+              ++featureIter)
+    {
+        // moveTo first point.
+        mapSegs_.moveTo( pixelsPerMeter_ * featureIter->points_.front().x_, 
+                         pixelsPerMeter_ * featureIter->points_.front().y_);
+
+        for (auto pointsIter = (*featureIter).points_.begin();
+                  pointsIter != (*featureIter).points_.end();
+                  ++pointsIter)
+        {
+            if (pointsIter->lineToNext_)
+            {
+                // check if last point needs to join with first point.
+                if (*pointsIter == 
+                    featureIter->points_.back())
+                {   // draw a line from last point to first point
+                    mapSegs_.lineTo(
+                        pixelsPerMeter_ * featureIter->points_.front().x_, 
+                        pixelsPerMeter_ * featureIter->points_.front().y_);
+                }
+                else
+                {
+                    // draw a line to the next point
+                    mapSegs_.lineTo(
+                        pixelsPerMeter_ * (std::next(pointsIter,1))->x_,  
+                        pixelsPerMeter_ * (std::next(pointsIter,1))->y_);  
+                }
+            }
+                    
+        }
+    }
+    mapSegs_.draw();
 
 }
 

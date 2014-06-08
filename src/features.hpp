@@ -12,17 +12,12 @@
 
 /**
  * \class Feature
- * \brief a linked list of points detailing how to draw a feature on the map.
- * \details points may or may not be joined by segments.
- */
-class Feature {
-    public:
-/**
- * \class Feature
  * \brief generates a feature from an input *.txt file.
  * \details handles features as coordinates and lines drawn between them.
  *          Not all lines have points between them.
  */
+class Feature {
+    public:
     Feature(char* filepath);
     ~Feature();
 /**
@@ -35,6 +30,7 @@ class Feature {
         public:
             Point(float x, float y, bool lineTo);
             ~Point();
+            bool operator==(const Point& otherPoint); ///< overload equality
             float x_;
             float y_;
             bool lineToNext_;   ///< true if point is connected to next point

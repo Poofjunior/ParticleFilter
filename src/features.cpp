@@ -34,3 +34,9 @@ Feature::Point::Point(float x, float y, bool lineTo)
 
 Feature::Point::~Point()
 {}
+
+bool Feature::Point::operator==(const Point& otherPoint)
+{
+    return (x_ == otherPoint.x_) && (y_ == otherPoint.y_) && 
+           (lineToNext_ == otherPoint.lineToNext_); 
+}

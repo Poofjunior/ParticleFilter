@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "particles.hpp"
 #include "map.hpp"
+#include <iostream> // FIXME: remove after debugging
 
 class ofApp : public ofBaseApp{
 
@@ -11,6 +12,8 @@ class ofApp : public ofBaseApp{
         static const int windowY_ = 600;
                       
         Particles* robotParticles_;
+        Map* theMap_;
+        ofPath mapSegs_;
     
         void setup();
         void update();

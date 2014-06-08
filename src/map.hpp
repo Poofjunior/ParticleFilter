@@ -17,10 +17,10 @@ public:
     ~Map();
 
 /**
- * \fn addFeature(string fileName)
+ * \fn addFeature(char *fileName)
  * \brief create a new feature from information in the *.txt file.
  */
-    void addFeature(char* filepath);
+    void addFeature(char *filepath);
     
     size_t numFeatures_;
 
