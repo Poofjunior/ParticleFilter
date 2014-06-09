@@ -1,7 +1,7 @@
 /**
  * particles.cpp
  * \author Joshua Vasquez
- * \date May 1, 2014
+ * \date May 1, 2014 to June 8, 2014
  */
 #include "particles.hpp"
 
@@ -24,7 +24,7 @@ Particles::~Particles()
     // Free our dynamically allocated memory.
     for (size_t eachPart = 0; eachPart< numParticles_; ++eachPart)
         delete theParticles_[eachPart];
-    //FIXME: do we need to also delete theParticles_ ???
+    delete [] theParticles_;    // FIXME: is this a double-delete?
 }
 
 void Particles::scatterParticles(float xmax, float ymax)
@@ -35,7 +35,7 @@ void Particles::scatterParticles(float xmax, float ymax)
     std::uniform_int_distribution<int> distributionY(0,ymax);
     std::uniform_int_distribution<int> distributionTheta(0,360);
 
-    for(int eachPart = 0; eachPart < numParticles_; ++eachPart)
+    for(size_t eachPart = 0; eachPart < numParticles_; ++eachPart)
     {
         theParticles_[eachPart]->xVal_ = distributionX(generator);
         theParticles_[eachPart]->yVal_ = distributionY(generator);
@@ -46,6 +46,7 @@ void Particles::scatterParticles(float xmax, float ymax)
 
 void Particles::propagateParticles()
 {
+
 }
 
 void Particles::updateParticles()
@@ -96,3 +97,59 @@ void Particles::Particle::updateParticle(double lWheelDelta,
 
 }
 
+
+float Particles::wallDist( float scannerX, float scannerY, float scannerTheta,
+                            float segX1, float segY1, float segX2, float segY2)
+{
+    // Two lines intersect if their slopes aren't parallel.
+    // Generate two slopes:
+    float laserM = tan(scannerTheta * M_PI / 180.0);
+    float laserYInt = laserM*(-scannerX) + scannerY;
+    // FIXME: handle infinite case...
+    float segmentM = (segY2 - segY1)/(segX2 - segX1); ///< WARNING: infinity
+    float segmentYInt = segmentM * (-segX1) + segY1;
+
+    // Compute intersection point, if it exists...
+    if (approxEqual(laserM, segmentM, 1))
+        return true;
+
+    // FIXME: infinity is really going to mess this up...
+    float intersectionX = (segmentYInt - laserYInt)/(laserM - segmentM);
+    float intersectionY = laserM*intersectionX + laserYInt;
+    
+    if (scanBackwards(scannerX, scannerY, scannerTheta, intersectionX,
+                      intersectionY))
+        return -1;
+    if (scanOffSegment(intersectionX, intersectionY, segX1, segY1, segX2, 
+                       segY2))
+        return -1;
+
+    return sqrt(pow((scannerX - intersectionX), 2) + 
+                pow((scannerY - intersectionY), 2));
+}
+
+
+bool Particles::scanBackwards(float scannerX, float scannerY, float laserTheta,        
+                              float intersectionX, float intersectionY)
+{
+    // Find angle of intersection point, relative to scanner point.
+    // Translate laser scan line to intersect origin.
+    // Take that angle with atan2
+    float intersectionAngle = atan2( (intersectionY - scannerY),
+                                     (intersectionX - scannerX));
+    
+    return (approxEqual(intersectionAngle, laserTheta, 3));
+}
+
+
+bool Particles::scanOffSegment(float intersectionX, float intersectionY,               
+                           float segX1, float segY1, float segX2, float segY2)
+{
+    if (!(intersectionX > std::min(segX1,segX2) && 
+          intersectionX < std::max(segX1, segX2)))
+        return false;
+    if (!(intersectionY > std::min(segY1,segY2) && 
+          intersectionY < std::max(segY1,segY2)))
+        return false;
+    return true;
+}

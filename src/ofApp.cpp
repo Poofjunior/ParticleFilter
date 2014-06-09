@@ -15,6 +15,7 @@ void ofApp::setup(){
     // Create a map with one feature
     theMap_ = new Map();
     theMap_->addFeature("roomOutline.txt");
+    theMap_->addFeature("box.txt");
     
 }
 
@@ -24,7 +25,6 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-	/*
 	for (size_t eachPart = 0; eachPart < robotParticles_->numParticles_; 
         ++eachPart)
     {
@@ -32,20 +32,8 @@ void ofApp::draw(){
                      robotParticles_->theParticles_[eachPart]->yVal_,
                      robotParticles_->theParticles_[eachPart]->theta_);
     }
-*/
 
     drawMap();
-    /*
-    ofPath myPath = ofPath();
-    myPath.setFilled(false);
-    myPath.setStrokeColor(ofColor::darkOrchid);
-    myPath.setStrokeWidth(5);
-    myPath.moveTo(100, 100);
-    myPath.lineTo(100,200);
-    myPath.lineTo(200,400);
-    myPath.draw();
-    */
-
 }
 
 //--------------------------------------------------------------
