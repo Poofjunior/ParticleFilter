@@ -64,12 +64,12 @@ public:
     void updateParticles();
 
 /**
- * \fn float wallDist( float scannerX, float scannerY, float lasTheta, 
+ * \fn float getWallDist( float scannerX, float scannerY, float lasTheta, 
                         float segX1, float segY1, float segX2, float segY2); 
  * \brief returns distance from scanner to segment, or -1 otherwise. 
  * \details ray is a single ray from the laser, and segment is from the map
  */ 
-    float wallDist( float scannerX, float scannerY, float scannerTheta,
+    float getWallDist( float scannerX, float scannerY, float scannerTheta,
                      float segX1, float segY1, float segX2, float segY2); 
 
 
@@ -115,8 +115,8 @@ template<typename T> bool approxEqual(T approxVal, T actualVal,
     public:
     private:
         friend class Particle;
-        static const double wheelRadius_;
-        static const double wheelSpacing_;
+        static constexpr double wheelRadius_ = 0.1;
+        static constexpr double wheelSpacing_ = 0.1;
     };
 
 };

@@ -4,11 +4,8 @@
  * \date May 1, 2014 to June 8, 2014
  */
 #include "particles.hpp"
+#include <limits>   ///< for representation of inifinity as a float
 
-// Constants. Alas, C++ wont let me put these in the header file since theyre
-// doubles.
-double const Particles::robotParams::wheelRadius_ = 0.1;
-double const Particles::robotParams::wheelSpacing_ = 0.1;
 
 Particles::Particles(size_t numParticles)
 :numParticles_{numParticles}
@@ -98,32 +95,44 @@ void Particles::Particle::updateParticle(double lWheelDelta,
 }
 
 
-float Particles::wallDist( float scannerX, float scannerY, float scannerTheta,
+float Particles::getWallDist( float scannerX, float scannerY, float scannerTheta,
                             float segX1, float segY1, float segX2, float segY2)
 {
-    // Two lines intersect if their slopes aren't parallel.
-    // Generate two slopes:
+
+    // Compare Slopes:
     float laserM = tan(scannerTheta * M_PI / 180.0);
-    float laserYInt = laserM*(-scannerX) + scannerY;
-    // FIXME: handle infinite case...
-    float segmentM = (segY2 - segY1)/(segX2 - segX1); ///< WARNING: infinity
-    float segmentYInt = segmentM * (-segX1) + segY1;
+    float segmentM = (segY2 - segY1)/(segX2 - segX1); 
 
-    // Compute intersection point, if it exists...
+    // FIXME: test approxEqual on both arguments infinity.
     if (approxEqual(laserM, segmentM, 1))
-        return true;
+        return std::numeric_limits<float>::infinity();
 
-    // FIXME: infinity is really going to mess this up...
+    // Use geometry for vertical lines.
+    if(segmentM == std::numeric_limits<float>::infinity())
+    {
+        return std::abs(segX1 - scannerX) / cos(scannerTheta);
+    }
+    if(laserM == std::numeric_limits<float>::infinity())
+    {
+        // FIXME verify that this works in all cases
+        float wallAngle = atan2((segY2 - segY1), (segX2 - segX1));
+        return std::abs(segX1 - scannerX) / cos(wallAngle);
+    }
+    // Use algebra for all other cases.
+    float laserYInt = laserM*(-scannerX) + scannerY;
+    float segmentYInt = segmentM * (-segX1) + segY1;
     float intersectionX = (segmentYInt - laserYInt)/(laserM - segmentM);
     float intersectionY = laserM*intersectionX + laserYInt;
     
     if (scanBackwards(scannerX, scannerY, scannerTheta, intersectionX,
                       intersectionY))
-        return -1;
+        return std::numeric_limits<float>::infinity();
+
     if (scanOffSegment(intersectionX, intersectionY, segX1, segY1, segX2, 
                        segY2))
-        return -1;
+        return std::numeric_limits<float>::infinity();
 
+    // translate to origin, and compute distance.
     return sqrt(pow((scannerX - intersectionX), 2) + 
                 pow((scannerY - intersectionY), 2));
 }
