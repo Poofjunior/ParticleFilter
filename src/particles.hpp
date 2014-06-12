@@ -74,28 +74,41 @@ public:
 
 
 private:
+        static constexpr float largeVal_ = 1000.;
+        static constexpr float smallVal_ = 0.001;
+        
 /**
- * \fn template<typename T> bool approxEqual(T approxVal, T actualVal, 
- *                                           float percentError) 
- * \brief return true if both values are equal within percent error.
- * \details percent error is given as a percent.
+ * \fn float tuneAngle(float angleInDeg)
+ * \brief convert input angle in degrees to radians and map value to a range
+ *        of -Pi/2 to Pi/2
  */
-template<typename T> bool approxEqual(T approxVal, T actualVal,         
-                                      float percentError)            
-{                                                                               
-    return (((std::abs(static_cast<float>(approxVal) 
-            - static_cast<float>(actualVal))) / static_cast<float>(actualVal) 
-            * 100.0) < percentError);                                           
-}   
+    float tuneAngle(float angleInDeg);
 
 /**
- * \fn bool scanBackwards(float scannerX, float scannerY, float laserTheta
+ * \fn float round( float input)
+ * \brief rounds large numbers to infinity and small numbers to zero
+ * \details this hack gets around calculation errors due to limited 
+ *          precision.
+ */
+    float round(float input);
+
+/**
+ * \fn bool approxEqual(T approxVal, T actualVal, float percentError) 
+ * \brief return true if both values are equal within percent error.
+ * \details percent error is given as a percent.
+ * \warning if actualVal is zero, this function returns true only if 
+ *          approxVal is also zero.
+ */
+    bool approxEqual(float approxVal, float actualVal, float percentError);            
+
+/**
+ * \fn bool scanBackwards(float scannerX, float scannerY, float scannerTheta 
  *                        float intersectionX, float intersectionY)
  * \brief true if laser scanner line intersects a wall from the wrong direction
  * \details laser scan lines are actually rays. This function alerts us
  *          to false-positive intersections.
  */
-    bool scanBackwards(float scannerX, float scannerY, float laserTheta, 
+    bool scanBackwards(float scannerX, float scannerY, float scannerTheta, 
                        float intersectionX, float intersectionY);
 
 /**
