@@ -50,5 +50,6 @@ void Particles::takeScan()
 
 void Particles::propagateParticles()
 {
+    // FIXME: write this function
 
 }

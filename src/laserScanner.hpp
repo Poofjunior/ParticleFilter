@@ -6,6 +6,9 @@
 
 #ifndef LASERSCANNER_HPP 
 #define LASERSCANNER_HPP
+#include <cstddef>
+#include <iostream>
+#include <algorithm>
 #include "point.hpp"
 #include "commonMath.hpp"
 
@@ -17,7 +20,7 @@
 class LaserScanner {
 
 public:
-    LaserScanner(float angleSpread, float numPoints);
+    LaserScanner(float angleSpread, size_t numPoints);
     ~LaserScanner();
     // TODO: Disable the default copy constructor.
 
@@ -36,9 +39,9 @@ public:
 
 
 private:
-    numPoints_;
-    angleSpread_;
-    stepAngle_;      ///< angle (in radians!) between scan points
+    float angleSpread_;
+    size_t numPoints_;
+    float stepAngle_;      ///< angle (in radians!) between scan points
     float * scan_;   ///< the laser scanner distances within the range: 
                     ///< (-angleSpread / 2) < scan[i] < (anglesSpread/2) 
     

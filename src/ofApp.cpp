@@ -5,13 +5,16 @@
 void ofApp::setup(){	
 	ofBackground(ofColor::dimGray);	
 	ofSetFrameRate(60);
+
+    // Create Particle filter:
     robotParticles_ = new Particles(100);
-    robotParticles_->scatterParticles(windowX_, windowY_);
+    robotParticles_->initParticles(windowX_, windowY_);
 
     // Setup mapSegs_ path parameters
     mapSegs_.setFilled(false);
     mapSegs_.setStrokeColor(ofColor::lightSlateGrey);
     mapSegs_.setStrokeWidth(5);
+
     // Create a map with one feature
     theMap_ = new Map();
     theMap_->addFeature("roomOutline.txt");
