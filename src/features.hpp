@@ -9,6 +9,10 @@
 #include <list>
 #include <fstream>
 #include <iostream>
+#include "point.hpp"
+
+//TODO: add a lineToNext_ array to indicate if there is a line from current
+//      point to the next point and remove lineToNext_ from the point class.
 
 /**
  * \class Feature
@@ -20,21 +24,6 @@ class Feature {
     public:
     Feature(char* filepath);
     ~Feature();
-/**
- * \class Point
- * \brief a mini class of basically just coordinates
- * \details each point also indicates whether or not there is a line to the 
- *          next point
- */
-    class Point {
-        public:
-            Point(float x, float y, bool lineTo);
-            ~Point();
-            bool operator==(const Point& otherPoint); ///< overload equality
-            float x_;
-            float y_;
-            bool lineToNext_;   ///< true if point is connected to next point
-    };
         
     std::list<Point> points_;///< douubly-linked list of the feature's points
     // std::list front() and back() implementations are constant.

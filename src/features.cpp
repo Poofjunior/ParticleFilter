@@ -25,18 +25,3 @@ Feature::~Feature()
     // nothing to do! std::list will delete its contents correctly as long
     // as the contents isn't pointers. 
 }
-
-Feature::Point::Point(float x, float y, bool lineTo)
-    :x_{x}, y_{y}, lineToNext_{lineTo}
-{
-    // nothing else to do!
-}
-
-Feature::Point::~Point()
-{}
-
-bool Feature::Point::operator==(const Point& otherPoint)
-{
-    return (x_ == otherPoint.x_) && (y_ == otherPoint.y_) && 
-           (lineToNext_ == otherPoint.lineToNext_); 
-}

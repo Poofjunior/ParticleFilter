@@ -6,6 +6,7 @@
 
 #ifndef LASERSCANNER_HPP 
 #define LASERSCANNER_HPP
+#include "point.hpp"
 
 /**
  * \class LaserScanner 
@@ -18,7 +19,19 @@ public:
     LaserScanner(float angleSpread, float numPoints);
     ~LaserScanner();
     // TODO: Disable the default copy constructor.
-    static void getIntersection(
+
+/**
+ * static void getIntersection( Point& intersection,
+ *                              float scannerX, float scannerY,
+ *                              float scanAngle, Point& segStart,
+ *                              Point& segEnd);
+ * \brief find the intersection point of the line segment from the given
+ *        scanner location 
+ */
+    static void getIntersection( Point& intersection, 
+                                 float scannerX, float scannerY, 
+                                 float scanAngle, Point& segStart,
+                                 Point& segEnd);
 
 
 private:
