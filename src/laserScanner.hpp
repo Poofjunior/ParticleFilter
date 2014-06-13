@@ -7,6 +7,7 @@
 #ifndef LASERSCANNER_HPP 
 #define LASERSCANNER_HPP
 #include "point.hpp"
+#include "commonMath.hpp"
 
 /**
  * \class LaserScanner 
@@ -40,6 +41,12 @@ private:
     stepAngle_;      ///< angle (in radians!) between scan points
     float * scan_;   ///< the laser scanner distances within the range: 
                     ///< (-angleSpread / 2) < scan[i] < (anglesSpread/2) 
+    
+    bool scanBackwards(float scannerX, float scannerY,
+                       float scannerTheta,
+                       Point& intersection);
+
+    bool scanOffSegment(Point& intersection, Point& segStart, Point& segEnd);
 
 
 

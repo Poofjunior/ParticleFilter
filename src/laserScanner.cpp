@@ -21,8 +21,13 @@ LaserScanner::~LaserScanner()
 }
 
 
-LaserScanner::getIntersection( segment & wall)
+void LaserScanner::getIntersection(Point& intersection, 
+                                   float scannerX, float scannerY, 
+                                   float scanAngle, 
+                                   Point& segStart, Point& segEnd;
 {
-
-
+    float scannerM = round(tan(tuneAngle(scanAngle)));
+    float segmentM = (segEnd.y_ - segStart.y_)/(segEnd.x_ - segStart.x_);
+    
+    // copy from particlesOld.cpp in the non-repo version.
 }
