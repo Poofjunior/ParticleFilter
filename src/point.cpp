@@ -5,10 +5,10 @@
  */
 #include "point.hpp"
 
-    // TODO: remove lineToNext entirely and implement solely in features
+    // TODO: remove fowardConnected_ entirely and implement solely in features
     // class.
-Point::Point(float x, float y, bool lineTo)
-    :x_{x}, y_{y}, lineToNext_{lineTo}
+Point::Point(float x, float y, bool forwardConnected)
+    :x_{x}, y_{y}, forwardConnected_{forwardConnected}
 {
     // nothing else to do!
 }
@@ -20,7 +20,7 @@ bool Point::operator==(const Point& otherPoint)
 {
 /*
     return (x_ == otherPoint.x_) && (y_ == otherPoint.y_) && 
-           (lineToNext_ == otherPoint.lineToNext_); 
+           (forwardConnected_== otherPoint.forwardConnected_); 
 */
     return (x_ == otherPoint.x_) && (y_ == otherPoint.y_);
            

@@ -10,7 +10,9 @@
 #include <iostream>
 #include <algorithm>
 #include "point.hpp"
+#include "pose.hpp"
 #include "commonMath.hpp"
+#include "map.hpp"
 
 /**
  * \class LaserScanner 
@@ -20,7 +22,7 @@
 class LaserScanner {
 
 public:
-    LaserScanner(float angleSpread = 120, size_t numPoints = 60);
+    LaserScanner(float angleSpread = 120, size_t numPoints = 5);
     ~LaserScanner();
     // TODO: Disable the default copy constructor.
 
@@ -28,11 +30,17 @@ public:
  * \fn takeScan()
  * \brief update the scan_ values with new scan data
  */
-    void takeScan();
+    static void takeScan(Pose& pose, Map& map);
+
+/**
+ * float getDist(Point& pt1, Point& pt2)
+ * \brief return the distance between two points
+ */
+    static float getDist(Point& pt1, Point& pt2);
 
 /**
  * static void getIntersection( Point& intersection,
- *                              float scannerX, float scannerY,
+ *                              Point& scanPt, 
  *                              float scanAngle, Point& segStart,
  *                              Point& segEnd);
  * \brief find the intersection point of the line segment from the given
@@ -54,7 +62,7 @@ public:
 private:
     float angleSpread_;
     size_t numPoints_;
-    float stepAngle_;      ///< angle (in radians!) between scan points
+    float step_;      ///< angle (in radians!) between scan points
     float * scan_;   ///< the laser scanner distances within the range: 
                     ///< (-angleSpread / 2) < scan[i] < (anglesSpread/2) 
 };

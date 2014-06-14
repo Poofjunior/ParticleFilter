@@ -5,7 +5,7 @@
 void ofApp::setup(){	
 	ofBackground(ofColor::dimGray);	
 	ofSetFrameRate(60);
-    robotParticles_ = new Particles(1);
+    robotParticles_ = new Particles(20);
     robotParticles_->initParticles(windowX_, windowY_);
 
     // Setup mapSegs_ path parameters
@@ -34,11 +34,6 @@ void ofApp::draw(){
 	for (size_t eachPart = 0; eachPart < robotParticles_->numParticles_; 
         ++eachPart)
     {
-        std::cout << "(" << robotParticles_->theParticles_[eachPart]->pose_.x_ 
-                  << "," << robotParticles_->theParticles_[eachPart]->pose_.y_
-                  << "," << 
-                         robotParticles_->theParticles_[eachPart]->pose_.theta_
-                  << ")" << std::endl;
         drawParticle(robotParticles_->theParticles_[eachPart]->pose_.x_, 
                      robotParticles_->theParticles_[eachPart]->pose_.y_,
                      robotParticles_->theParticles_[eachPart]->pose_.theta_);
@@ -58,11 +53,6 @@ void ofApp::draw(){
     }
 
     laser.draw();
-/*
-    drawParticle(100, 100, 90);
-    drawParticle(150, 100, 180);
-    drawParticle(200, 100, 270);
-*/
     drawMap();
 }
 
@@ -94,7 +84,7 @@ void ofApp::drawMap()
                   pointsIter != (*featureIter).points_.end();
                   ++pointsIter)
         {
-            if (pointsIter->lineToNext_)
+            if (pointsIter->forwardConnected_)
             {
                 // check if last point needs to join with first point.
                 if (*pointsIter == 

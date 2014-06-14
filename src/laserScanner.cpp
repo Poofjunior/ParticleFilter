@@ -11,6 +11,7 @@ LaserScanner::LaserScanner(float angleSpread, size_t numPoints)
 {
     // Create the array for scan distances:
     scan_ = new float[numPoints_];
+    step_ = angleStep_ / numPoints_;
 }
 
 
@@ -19,14 +20,42 @@ LaserScanner::~LaserScanner()
     delete [] scan_;
 }
 
-void LaserScanner::takeScan()
+void LaserScanner::takeScan(Pose& pose, Map& map)
 {
-    // For all points, calculate their distances and update scan_
+    // For all angles, for all map segs, get closest wall dist. 
+    float angleToMeas = pose.theta_ - (angleSpread_/2);
+    Point intersection;
+    Point scanPt(pose.x_, pose.y_; 
+
+    for(eachBeam = 0; eachBeam < numPoints; ++eachBeam)
+    {
+        for (auto eachFeature; ;)
+        {
+            for (size_t eachPoint = 0; eachPoint <  eachFeature->size(); 
+                 ++eachPoint)
+            {
+                // Check if last point is forwardConnected to first point.
+                if(eachPoint == (eachFeature->size() - 1))
+                {
+                    //     
+                }
+                getIntersection(intesection, scanPt, angleToMeas, 
+                scan_[eachBeam] = getDist(scanPt, intersection);
+                angleToMeas += step;
+            }
+        }
+    }
+    
 }
 
-//TODO: should this be static?
+float LaserScanner::getDist(Point& pt1, Point& pt2)
+{
+    return sqrt( (pow( (pt1.x_ - pt2.x_), 2) + 
+                  pow( (pt1.y_ - pt2.y_), 2));
+}
+
 void LaserScanner::getIntersection(Point& intersection, 
-                                   float scannerX, float scannerY, 
+                                   Point& scanPt, 
                                    float scanAngle, 
                                    Point& segStart, Point& segEnd)
 {
@@ -44,25 +73,25 @@ void LaserScanner::getIntersection(Point& intersection,
     if (scannerM == std::numeric_limits<float>::infinity()) 
     {
         yInt = segmentM * (-segStart.x_) + segStart.y_;
-        intersection.x_ = scannerX;
-        intersection.y_ = segmentM * scannerX + yInt;
+        intersection.x_ = scanPt.x_;
+        intersection.y_ = segmentM * scanPt.x_ + yInt;
     }
     else if (segmentM == std::numeric_limits<float>::infinity()) 
     {
-        yInt = scannerM * (-scannerX) + scannerY;
+        yInt = scannerM * (-scanPt.x_) + scanPt.y_;
         intersection.x_ = segStart.x_;
         intersection.y_ = scannerM * segStart.x_ + yInt;
     }
     else
     {
-        float laserYInt = scannerM * (-scannerX) + scannerY;
+        float laserYInt = scannerM * (-scanPt.x_) + scanPt.y_;
         float segmentYInt = segmentM* (-segStart.x_) + segStart.y_;
         intersection.x_ = (segmentYInt - laserYInt)/(scannerM - segmentM);
         intersection.y_ = scannerM * intersection.x_ + laserYInt;
     }
     
     // Run last checks:
-    if (scanBackwards(scannerX, scannerY, scanAngle, intersection))
+    if (scanBackwards(scanPt.x_, scanPt.y_, scanAngle, intersection))
     {
         intersection.x_ = std::numeric_limits<float>::infinity(); 
         intersection.y_ = std::numeric_limits<float>::infinity(); 

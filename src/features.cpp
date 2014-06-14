@@ -8,15 +8,15 @@
 Feature::Feature(char *filepath)
 {
     std::ifstream infile(filepath);
-    // Format is x, y, lineToNext
+    // Format is x, y, forwardConnected 
     float x, y; 
-    bool lineToNext;
+    bool forwardConnected;
     std::cout << "Creating feature from " << filepath << std::endl;
-    while (infile >> x >> y >> lineToNext)
+    while (infile >> x >> y >> forwardConnected)
     {
-        points_.push_back( Point{x,y,lineToNext});
-        std::cout << "(" << x << ", " << y << ")" << "lineToNext: " << 
-                     lineToNext << std::endl;
+        points_.push_back( Point{x,y,forwardConnected});
+        std::cout << "(" << x << ", " << y << ")" << "forwardConnected: " << 
+                     forwardConnected << std::endl;
     }
 }
 

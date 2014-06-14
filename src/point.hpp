@@ -20,6 +20,6 @@ class Point {
         bool operator==(const Point& otherPoint); ///< overload equality
         float x_;
         float y_;
-        bool lineToNext_;   ///< true if point is connected to next point
+        bool forwardConnected_;   ///< true if point is connected to next point
     };
 #endif // POINT_HPP 

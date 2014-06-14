@@ -11,8 +11,9 @@
 #include <iostream>
 #include "point.hpp"
 
-//TODO: add a lineToNext_ array to indicate if there is a line from current
-//      point to the next point and remove lineToNext_ from the point class.
+//TODO: add a forwardConnected_ array to indicate if there is a line from 
+//      current  point to the next point and remove forwardConnectd_ from the 
+//      point class.
 
 /**
  * \class Feature
