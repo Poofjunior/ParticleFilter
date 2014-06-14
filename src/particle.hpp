@@ -18,13 +18,11 @@ public:
  * \fn void propagate();
  * \brief update particle pose according to robot-specific motion model.
  */    
-        void propagate()
+        void propagate();
     
         Pose pose_;
         LaserScanner laser_;
         double weight_;
-    };
-
 };
 #endif // PARTICLE_HPP
 

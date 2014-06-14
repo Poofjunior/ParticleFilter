@@ -14,8 +14,15 @@
 class Pose {
 
 public:
-    Pose();
-    ~Pose();
+    Pose(float x = 0, float y = 0, float theta = 0) 
+    :x_(x), y_(y), theta_(theta)
+    {
+        // Nothing else to do!
+    }
+    ~Pose()
+    {
+        // Nothing else to do!
+    }
 
     float x_;
     float y_;

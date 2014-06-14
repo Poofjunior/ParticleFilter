@@ -31,9 +31,9 @@ void ofApp::draw(){
 	for (size_t eachPart = 0; eachPart < robotParticles_->numParticles_; 
         ++eachPart)
     {
-        drawParticle(robotParticles_->theParticles_[eachPart]->xVal_, 
-                     robotParticles_->theParticles_[eachPart]->yVal_,
-                     robotParticles_->theParticles_[eachPart]->theta_);
+        drawParticle(robotParticles_->theParticles_[eachPart]->pose_.x_, 
+                     robotParticles_->theParticles_[eachPart]->pose_.y_,
+                     robotParticles_->theParticles_[eachPart]->pose_.theta_);
     }
 
     drawMap();

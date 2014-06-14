@@ -10,6 +10,9 @@
 #include <ctgmath>
 namespace CommonMath {
 
+const float largeVal_ = 1000; 
+const float smallVal_ = 0.001;
+
 /**
  * \fn parallel(float slopeA, slopeB)
  * \brief true if both lines are parallel within rounding error
@@ -18,16 +21,16 @@ namespace CommonMath {
 bool parallel( float slopeA, float slopeB);
 
 /**
- * \fn round(float input)
+ * \fn float round(float input)
  * \brief rounds input to infinities or to zero for extreme values to prevent
  *        rounding error
  */
-bool round(float input);
+float round(float input);
 
 
 bool approxEqual( float val1, float val2, float percentError);
 
-bool tuneAngle(float angle);
+float tuneAngle(float angle);
 };
 
 #endif // COMMONMATH_HPP

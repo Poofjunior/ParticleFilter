@@ -14,14 +14,19 @@
  * \details rWheelDelta and lWheelDelta should be reassigned at each loop 
  *          iteration before calling updatePose.
  */
-namespace MotionModel {
+class MotionModel {
+public:
+    MotionModel();
+    ~MotionModel();
+    static void updatePose(Pose& oldPose);
 
-    float rWheelDelta_;
-    float lWheelDelta_;
-    float wheelSpacing_;
-    float wheelRadius_;
+    static float rWheelDelta_;
+    static float lWheelDelta_;
     
-    void updatePose(Pose& oldPose);
+    static constexpr float wheelSpacing_ = 0.25;
+    static constexpr float wheelRadius_ = 0.1;
+
+private:
 };
 #endif // MOTIONMODEL_HPP
 

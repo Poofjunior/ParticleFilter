@@ -20,9 +20,15 @@
 class LaserScanner {
 
 public:
-    LaserScanner(float angleSpread, size_t numPoints);
+    LaserScanner(float angleSpread = 120, size_t numPoints = 60);
     ~LaserScanner();
     // TODO: Disable the default copy constructor.
+
+/**
+ * \fn takeScan()
+ * \brief update the scan_ values with new scan data
+ */
+    void takeScan();
 
 /**
  * static void getIntersection( Point& intersection,

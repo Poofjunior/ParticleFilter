@@ -14,7 +14,7 @@ bool CommonMath::parallel(float slopeA, float slopeB)
     // Handle special case where parallel vertical lines could round to 
     // opposite slopes.
     if((roundedA == std::numeric_limits<float>::infinity() ||
-       (rounded A == -std::numeric_limits<float>::infinity())) &&
+       (roundedA == -std::numeric_limits<float>::infinity())) &&
        (roundedB == std::numeric_limits<float>::infinity() ||
        (roundedB == -std::numeric_limits<float>::infinity())))
         return true;

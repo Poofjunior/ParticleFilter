@@ -33,8 +33,8 @@ void Particles::initParticles(float xmax, float ymax)
     for(size_t eachPart = 0; eachPart < numParticles_; ++eachPart)
     {
         theParticles_[eachPart]->pose_.x_ = distributionX(generator);
-        theParticles_[eachPart]->pose.y_ = distributionY(generator);
-        theParticles_[eachPart]->pose.theta_ = distributionTheta(generator);
+        theParticles_[eachPart]->pose_.y_ = distributionY(generator);
+        theParticles_[eachPart]->pose_.theta_ = distributionTheta(generator);
     }
 
 }
@@ -43,7 +43,7 @@ void Particles::takeScan()
 {
     for(size_t eachPart = 0; eachPart < numParticles_; ++eachPart)
     {
-        theParticles[eachPart].laser_.takeScan();
+        theParticles_[eachPart]->laser_.takeScan();
     }
 
 }
