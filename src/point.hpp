@@ -15,7 +15,7 @@
  */
 class Point {
     public:
-        Point(float x, float y, bool lineTo = false);
+        Point(float x = 0, float y = 0, bool lineTo = false);
         ~Point();
         bool operator==(const Point& otherPoint); ///< overload equality
         float x_;

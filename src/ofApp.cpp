@@ -5,16 +5,13 @@
 void ofApp::setup(){	
 	ofBackground(ofColor::dimGray);	
 	ofSetFrameRate(60);
-
-    // Create Particle filter:
-    robotParticles_ = new Particles(100);
+    robotParticles_ = new Particles(1);
     robotParticles_->initParticles(windowX_, windowY_);
 
     // Setup mapSegs_ path parameters
     mapSegs_.setFilled(false);
     mapSegs_.setStrokeColor(ofColor::lightSlateGrey);
     mapSegs_.setStrokeWidth(5);
-
     // Create a map with one feature
     theMap_ = new Map();
     theMap_->addFeature("roomOutline.txt");
@@ -26,16 +23,46 @@ void ofApp::setup(){
 void ofApp::update(){
 }
 
-//--------------------------------------------------------------
 void ofApp::draw(){
+
+        ofPath laser;
+        laser.setFilled(false);
+        laser.setStrokeColor(ofColor::red);
+        laser.setStrokeWidth(1);
+
+    std::cout << std::endl;
 	for (size_t eachPart = 0; eachPart < robotParticles_->numParticles_; 
         ++eachPart)
     {
+        std::cout << "(" << robotParticles_->theParticles_[eachPart]->pose_.x_ 
+                  << "," << robotParticles_->theParticles_[eachPart]->pose_.y_
+                  << "," << 
+                         robotParticles_->theParticles_[eachPart]->pose_.theta_
+                  << ")" << std::endl;
         drawParticle(robotParticles_->theParticles_[eachPart]->pose_.x_, 
                      robotParticles_->theParticles_[eachPart]->pose_.y_,
                      robotParticles_->theParticles_[eachPart]->pose_.theta_);
+
+        Point intersection;
+        Point segStart(0, 10);
+        Point segEnd(windowX_, 600);
+        LaserScanner::getIntersection(intersection, 
+                     robotParticles_->theParticles_[eachPart]->pose_.x_, 
+                     robotParticles_->theParticles_[eachPart]->pose_.y_,
+                     robotParticles_->theParticles_[eachPart]->pose_.theta_,
+                     segStart, segEnd);
+        laser.moveTo(robotParticles_->theParticles_[eachPart]->pose_.x_,
+                     robotParticles_->theParticles_[eachPart]->pose_.y_);
+
+        laser.lineTo(intersection.x_, intersection.y_);
     }
 
+    laser.draw();
+/*
+    drawParticle(100, 100, 90);
+    drawParticle(150, 100, 180);
+    drawParticle(200, 100, 270);
+*/
     drawMap();
 }
 
@@ -99,7 +126,7 @@ void ofApp::drawParticle( float x, float y, float theta)
     myTri.setFillColor(ofColor::cornsilk);
     
     // Create a triangle centered at the origin.
-    myTri.triangle(-5,-2, 5, -2, 0, 12);
+    myTri.triangle(-2, -5, -2, 5, 12, 0);
     // Rotate first, since rotation is about an axis. Then, translate
     myTri.rotate(theta, ofVec3f(0,0,1));
     myTri.translate(ofPoint(x, y, 0));
