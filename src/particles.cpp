@@ -39,11 +39,13 @@ void Particles::initParticles(float xmax, float ymax)
 
 }
 
-void Particles::takeScan()
+void Particles::takeScan(Map& map)
 {
     for(size_t eachPart = 0; eachPart < numParticles_; ++eachPart)
     {
-        theParticles_[eachPart]->laser_.takeScan();
+        theParticles_[eachPart]->laser_.takeScan(
+                                            theParticles_[eachPart]->pose_,
+                                            map);
     }
 
 }

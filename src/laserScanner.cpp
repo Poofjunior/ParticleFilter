@@ -10,8 +10,8 @@ LaserScanner::LaserScanner(float angleSpread, size_t numPoints)
 :angleSpread_{angleSpread}, numPoints_{numPoints}
 {
     // Create the array for scan distances:
-    scan_ = new float[numPoints_];
-    step_ = angleStep_ / numPoints_;
+    scan_ = new float[numPoints];
+    step_ = angleSpread / numPoints;
 }
 
 
@@ -22,27 +22,47 @@ LaserScanner::~LaserScanner()
 
 void LaserScanner::takeScan(Pose& pose, Map& map)
 {
-    // For all angles, for all map segs, get closest wall dist. 
     float angleToMeas = pose.theta_ - (angleSpread_/2);
     Point intersection;
-    Point scanPt(pose.x_, pose.y_; 
+    Point scanPt(pose.x_, pose.y_); 
+    Point segStart, segEnd;
+    float distToSeg;
+    float minDistSoFar = std::numeric_limits<float>::infinity();
+    std::list<Point>::iterator nextPtIter;
 
-    for(eachBeam = 0; eachBeam < numPoints; ++eachBeam)
+    // For all angles, for all map segs, get closest wall dist. 
+    for(size_t beamIndex = 0; beamIndex < numPoints_; ++beamIndex)
     {
-        for (auto eachFeature; ;)
+        // Find minimum with a best-so-far iteration method.
+        minDistSoFar = std::numeric_limits<float>::infinity();
+        for (auto featureIter = map.features_.begin(); 
+             featureIter != map.features_.end(); ++featureIter)
         {
-            for (size_t eachPoint = 0; eachPoint <  eachFeature->size(); 
-                 ++eachPoint)
+            for (auto ptIter = featureIter->points_.begin();  
+                 ptIter != featureIter->points_.end(); ++ptIter)
             {
-                // Check if last point is forwardConnected to first point.
-                if(eachPoint == (eachFeature->size() - 1))
+                // Check for forward-connectedness between two adjacent pts.
+                if (segStart.forwardConnected_)
                 {
-                    //     
+                    segStart = *ptIter;
+                    // Check if last point is forwardConnected to first point.
+                    if(ptIter == featureIter->points_.end())
+                        segEnd = featureIter->points_.front();
+                    else
+                    {
+                        nextPtIter = ptIter;
+                        ++nextPtIter;
+                        segEnd = *nextPtIter;
+                    }
+
+                    getIntersection(intersection, scanPt, angleToMeas,  
+                                    segStart, segEnd); 
+                    getDist(scanPt, intersection);
                 }
-                getIntersection(intesection, scanPt, angleToMeas, 
-                scan_[eachBeam] = getDist(scanPt, intersection);
-                angleToMeas += step;
+                angleToMeas += step_;
             }
+            
+            scan_[beamIndex] = minDistSoFar; 
         }
     }
     
@@ -51,7 +71,7 @@ void LaserScanner::takeScan(Pose& pose, Map& map)
 float LaserScanner::getDist(Point& pt1, Point& pt2)
 {
     return sqrt( (pow( (pt1.x_ - pt2.x_), 2) + 
-                  pow( (pt1.y_ - pt2.y_), 2));
+                  pow( (pt1.y_ - pt2.y_), 2)));
 }
 
 void LaserScanner::getIntersection(Point& intersection, 

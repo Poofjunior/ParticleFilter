@@ -30,10 +30,10 @@ public:
  * \fn takeScan()
  * \brief update the scan_ values with new scan data
  */
-    static void takeScan(Pose& pose, Map& map);
+    void takeScan(Pose& pose, Map& map);
 
 /**
- * float getDist(Point& pt1, Point& pt2)
+ * static float getDist(Point& pt1, Point& pt2)
  * \brief return the distance between two points
  */
     static float getDist(Point& pt1, Point& pt2);
@@ -47,7 +47,7 @@ public:
  *        scanner location 
  */
     static void getIntersection( Point& intersection, 
-                                 float scannerX, float scannerY, 
+                                 Point& scanPt, 
                                  float scanAngle, Point& segStart,
                                  Point& segEnd);
 

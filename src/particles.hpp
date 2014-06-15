@@ -30,10 +30,11 @@ public:
     void initParticles(float xmax, float ymax);
 
 /**
- * \fn takeScan()
+ * \fn takeScan(Map& map)
  * \brief have all particles take a scan from their pose on the map.
  */
-    void takeScan();
+    // FIXME: is passing in the map the best way to do this?
+    void takeScan(Map& map);
 
 /**
  * \fn propagateParticles()
