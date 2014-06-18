@@ -30,7 +30,7 @@ void ofApp::draw(){
         laser.setStrokeColor(ofColor::red);
         laser.setStrokeWidth(1);
 
-    std::cout << std::endl;
+    //std::cout << std::endl;
 	for (size_t eachPart = 0; eachPart < robotParticles_->numParticles_; 
         ++eachPart)
     {
@@ -39,11 +39,11 @@ void ofApp::draw(){
                      robotParticles_->theParticles_[eachPart]->pose_.theta_);
 
         Point intersection;
+        Point laserPt(robotParticles_->theParticles_[eachPart]->pose_.x_, 
+                      robotParticles_->theParticles_[eachPart]->pose_.y_);
         Point segStart(0, 10);
         Point segEnd(windowX_, 600);
-        LaserScanner::getIntersection(intersection, 
-                     robotParticles_->theParticles_[eachPart]->pose_.x_, 
-                     robotParticles_->theParticles_[eachPart]->pose_.y_,
+        LaserScanner::getIntersection(intersection, laserPt,
                      robotParticles_->theParticles_[eachPart]->pose_.theta_,
                      segStart, segEnd);
         laser.moveTo(robotParticles_->theParticles_[eachPart]->pose_.x_,
