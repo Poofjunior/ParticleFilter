@@ -25,25 +25,28 @@ void ofApp::update(){
 
 void ofApp::draw(){
 
-        ofPath laser;
-        laser.setFilled(false);
-        laser.setStrokeColor(ofColor::red);
-        laser.setStrokeWidth(1);
+    ofPath laser;
+    Point laserLoc;
+    Point intersection;
+    laser.setFilled(false);
+    laser.setStrokeColor(ofColor::red);
+    laser.setStrokeWidth(1);
 
-    //std::cout << std::endl;
 	for (size_t eachPart = 0; eachPart < robotParticles_->numParticles_; 
         ++eachPart)
     {
+        // Draw arbitrary diagonal line for testing:
+        Point segStart(0, 10);
+        Point segEnd(windowX_, 600);
+
         drawParticle(robotParticles_->theParticles_[eachPart]->pose_.x_, 
                      robotParticles_->theParticles_[eachPart]->pose_.y_,
                      robotParticles_->theParticles_[eachPart]->pose_.theta_);
 
-        Point intersection;
-        Point laserPt(robotParticles_->theParticles_[eachPart]->pose_.x_, 
-                      robotParticles_->theParticles_[eachPart]->pose_.y_);
-        Point segStart(0, 10);
-        Point segEnd(windowX_, 600);
-        LaserScanner::getIntersection(intersection, laserPt,
+        Point laserLoc(robotParticles_->theParticles_[eachPart]->pose_.x_, 
+                       robotParticles_->theParticles_[eachPart]->pose_.y_);
+
+        LaserScanner::getIntersection(intersection, laserLoc,
                      robotParticles_->theParticles_[eachPart]->pose_.theta_,
                      segStart, segEnd);
         laser.moveTo(robotParticles_->theParticles_[eachPart]->pose_.x_,
@@ -85,8 +88,7 @@ void ofApp::drawMap()
                   ++pointsIter)
         {
             if (pointsIter->forwardConnected_)
-            {
-                // check if last point needs to join with first point.
+            {   // check if last point needs to join with first point.
                 if (*pointsIter == 
                     featureIter->points_.back())
                 {   // draw a line from last point to first point
@@ -95,18 +97,15 @@ void ofApp::drawMap()
                         pixelsPerMeter_ * featureIter->points_.front().y_);
                 }
                 else
-                {
-                    // draw a line to the next point
+                {   // draw a line to the next point
                     mapSegs_.lineTo(
                         pixelsPerMeter_ * (std::next(pointsIter,1))->x_,  
                         pixelsPerMeter_ * (std::next(pointsIter,1))->y_);  
                 }
             }
-                    
         }
     }
     mapSegs_.draw();
-
 }
 
 //--------------------------------------------------------------
