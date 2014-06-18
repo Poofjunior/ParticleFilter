@@ -11,7 +11,7 @@ LaserScanner::LaserScanner(float angleSpread, size_t numPoints)
 {
     // Create the array for scan distances:
     scan_ = new float[numPoints];
-    step_ = angleSpread / numPoints;
+    step_ = angleSpread / (numPoints - 1);
 }
 
 
@@ -22,9 +22,11 @@ LaserScanner::~LaserScanner()
 
 void LaserScanner::takeScan(Pose& pose, Map& map)
 {
+    std::cout << std::endl;
     float angleToMeas = pose.theta_ - (angleSpread_/2);
     Point intersection;
     Point scanPt(pose.x_, pose.y_); 
+    std::cout << "scanPt: " << scanPt.x_ << ", " << scanPt.y_ << std::endl;
     Point segStart, segEnd;
     float distToSeg;
     float minDistSoFar = std::numeric_limits<float>::infinity();
@@ -33,6 +35,7 @@ void LaserScanner::takeScan(Pose& pose, Map& map)
     // For all angles, for all map segs, get closest wall dist. 
     for(size_t beamIndex = 0; beamIndex < numPoints_; ++beamIndex)
     {
+        std::cout << "angleToMeas: " << angleToMeas << std::endl;
         // Find minimum with a best-so-far iteration method.
         minDistSoFar = std::numeric_limits<float>::infinity();
 
@@ -44,31 +47,35 @@ void LaserScanner::takeScan(Pose& pose, Map& map)
                  ptIter != featureIter->points_.end(); ++ptIter)
             {
                 // Check for forward-connectedness between two adjacent pts.
-                if (segStart.forwardConnected_)
+                if (ptIter->forwardConnected_)
                 {
                     segStart = *ptIter;
                     // Check if last point is forwardConnected to first point.
-                    if(ptIter == featureIter->points_.end())
+                    nextPtIter = ptIter;
+                    ++nextPtIter;
+                    segEnd = *nextPtIter;
+                    
+                    if(nextPtIter == featureIter->points_.end())
                         segEnd = featureIter->points_.front();
-                    else
-                    {
-                        nextPtIter = ptIter;
-                        ++nextPtIter;
-                        segEnd = *nextPtIter;
-                    }
 
                     getIntersection(intersection, scanPt, angleToMeas,  
                                     segStart, segEnd); 
+
+                    std::cout << "segStart: (" << segStart.x_ << "," 
+                              << segStart.y_ 
+                              << ") segEnd: (" << segEnd.x_ << ", " 
+                              << segEnd.y_ << ")"
+                              << std::endl;
+
                     distToSeg = getDist(scanPt, intersection);
 
                     if (distToSeg < minDistSoFar)
                         minDistSoFar = distToSeg;
                 }
-                angleToMeas += step_;
             }
-            
         }
         scan_[beamIndex] = minDistSoFar; 
+        angleToMeas += step_;
     }
     
 }

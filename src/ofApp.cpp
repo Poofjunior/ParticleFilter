@@ -5,8 +5,8 @@
 void ofApp::setup(){	
 	ofBackground(ofColor::dimGray);	
 	ofSetFrameRate(60);
-    robotParticles_ = new Particles(20);
-    robotParticles_->initParticles(windowX_, windowY_);
+    robotParticles_ = new Particles(5);
+    robotParticles_->initParticles(8,8);
 
     // Setup mapSegs_ path parameters
     mapSegs_.setFilled(false);
@@ -24,6 +24,23 @@ void ofApp::update(){
 }
 
 void ofApp::draw(){
+    // FIXME: change Map& to Map pointer... maybe.
+    for (size_t numParts = 0; numParts < 5; ++numParts)
+    {
+    std::cout << "particle " << numParts << std::endl;
+    robotParticles_->theParticles_[numParts]->laser_.takeScan(
+                                    robotParticles_->theParticles_[numParts]->pose_,
+                                    *theMap_);
+    for (size_t i = 0; i < 
+                        robotParticles_->theParticles_[numParts]->laser_.numPoints_;
+                        ++i)
+    std::cout << "dist: " 
+              << robotParticles_->theParticles_[numParts]->laser_.scan_[i]
+              << std::endl;
+
+    }
+    std::cout << std::endl;
+    std::cout << std::endl;
 
     ofPath laser;
     Point laserLoc;
@@ -49,14 +66,18 @@ void ofApp::draw(){
         LaserScanner::getIntersection(intersection, laserLoc,
                      robotParticles_->theParticles_[eachPart]->pose_.theta_,
                      segStart, segEnd);
-        laser.moveTo(robotParticles_->theParticles_[eachPart]->pose_.x_,
-                     robotParticles_->theParticles_[eachPart]->pose_.y_);
+        laser.moveTo
+         (pixelsPerMeter_ * robotParticles_->theParticles_[eachPart]->pose_.x_,
+          pixelsPerMeter_ * robotParticles_->theParticles_[eachPart]->pose_.y_);
 
-        laser.lineTo(intersection.x_, intersection.y_);
+        laser.lineTo(
+            pixelsPerMeter_ * intersection.x_, 
+            pixelsPerMeter_ * intersection.y_);
     }
 
     laser.draw();
     drawMap();
+
 }
 
 //--------------------------------------------------------------
@@ -118,7 +139,8 @@ void ofApp::drawParticle( float x, float y, float theta)
     myTri.triangle(-2, -5, -2, 5, 12, 0);
     // Rotate first, since rotation is about an axis. Then, translate
     myTri.rotate(theta, ofVec3f(0,0,1));
-    myTri.translate(ofPoint(x, y, 0));
+    // Scale triangle appropriately.
+    myTri.translate(ofPoint((x * pixelsPerMeter_), (y * pixelsPerMeter_), 0));
     myTri.draw();
 }
 
