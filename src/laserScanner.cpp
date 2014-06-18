@@ -35,6 +35,8 @@ void LaserScanner::takeScan(Pose& pose, Map& map)
     {
         // Find minimum with a best-so-far iteration method.
         minDistSoFar = std::numeric_limits<float>::infinity();
+
+        // Nested for-loop to iterate through all points via their features
         for (auto featureIter = map.features_.begin(); 
              featureIter != map.features_.end(); ++featureIter)
         {
@@ -57,13 +59,16 @@ void LaserScanner::takeScan(Pose& pose, Map& map)
 
                     getIntersection(intersection, scanPt, angleToMeas,  
                                     segStart, segEnd); 
-                    getDist(scanPt, intersection);
+                    distToSeg = getDist(scanPt, intersection);
+
+                    if (distToSeg < minDistSoFar)
+                        minDistSoFar = distToSeg;
                 }
                 angleToMeas += step_;
             }
             
-            scan_[beamIndex] = minDistSoFar; 
         }
+        scan_[beamIndex] = minDistSoFar; 
     }
     
 }
