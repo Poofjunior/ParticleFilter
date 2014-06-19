@@ -26,7 +26,6 @@ void LaserScanner::takeScan(Pose& pose, Map& map)
     float angleToMeas = pose.theta_ - (angleSpread_/2);
     Point intersection;
     Point scanPt(pose.x_, pose.y_); 
-    std::cout << "scanPt: " << scanPt.x_ << ", " << scanPt.y_ << std::endl;
     Point segStart, segEnd;
     float distToSeg;
     float minDistSoFar = std::numeric_limits<float>::infinity();
@@ -61,11 +60,16 @@ void LaserScanner::takeScan(Pose& pose, Map& map)
                     getIntersection(intersection, scanPt, angleToMeas,  
                                     segStart, segEnd); 
 
-                    std::cout << "segStart: (" << segStart.x_ << "," 
+                    std::cout << "scanPt: " << scanPt.x_ << ", " 
+                              << scanPt.y_ 
+                              << " segStart: (" << segStart.x_ << "," 
                               << segStart.y_ 
                               << ") segEnd: (" << segEnd.x_ << ", " 
-                              << segEnd.y_ << ")"
+                              << segEnd.y_ << ")" << " intersection: ("
+                              << intersection.x_ << ", " << intersection.y_ 
+                              << ")" 
                               << std::endl;
+                    std::cout << std::endl;
 
                     distToSeg = getDist(scanPt, intersection);
 
@@ -76,6 +80,8 @@ void LaserScanner::takeScan(Pose& pose, Map& map)
         }
         scan_[beamIndex] = minDistSoFar; 
         angleToMeas += step_;
+        std::cout << std::endl;
+        std::cout << std::endl;
     }
     
 }
@@ -96,6 +102,7 @@ void LaserScanner::getIntersection(Point& intersection,
     
     if (CommonMath::parallel(scannerM, segmentM))
     {
+        std::cout << "PARALELL" << std::endl;
         intersection.x_ = std::numeric_limits<float>::infinity(); 
         intersection.y_ = std::numeric_limits<float>::infinity(); 
         return;
@@ -104,33 +111,44 @@ void LaserScanner::getIntersection(Point& intersection,
     float yInt;
     if (scannerM == std::numeric_limits<float>::infinity()) 
     {
+        std::cout << "laserVertical" << std::endl;
+        intersection.x_ = std::numeric_limits<float>::infinity(); 
         yInt = segmentM * (-segStart.x_) + segStart.y_;
         intersection.x_ = scanPt.x_;
         intersection.y_ = segmentM * scanPt.x_ + yInt;
     }
-    else if (segmentM == std::numeric_limits<float>::infinity()) 
+    else if (std::abs(segmentM) == std::numeric_limits<float>::infinity()) 
     {
+        std::cout << "WallVertical" << std::endl;
         yInt = scannerM * (-scanPt.x_) + scanPt.y_;
         intersection.x_ = segStart.x_;
         intersection.y_ = scannerM * segStart.x_ + yInt;
     }
     else
     {
+        std::cout << "NORMAL INTERCEPT" << std::endl;
         float laserYInt = scannerM * (-scanPt.x_) + scanPt.y_;
         float segmentYInt = segmentM* (-segStart.x_) + segStart.y_;
+        std::cout << "scannerM: " << scannerM << std::endl;
+        std::cout << "segmentM: " << segmentM << std::endl;
+        std::cout << "laserYInt: " << laserYInt << std::endl;
+        std::cout << "segmentYInt: " << segmentYInt << std::endl;
         intersection.x_ = (segmentYInt - laserYInt)/(scannerM - segmentM);
         intersection.y_ = scannerM * intersection.x_ + laserYInt;
     }
     
     // Run last checks:
-    if (scanBackwards(scanPt.x_, scanPt.y_, scanAngle, intersection))
+    if (scanOffSegment(intersection, segStart, segEnd))
     {
+        std::cout << "SCAN OFF SEGMENT" << std::endl;
         intersection.x_ = std::numeric_limits<float>::infinity(); 
         intersection.y_ = std::numeric_limits<float>::infinity(); 
         return;
     }
-    if (scanOffSegment(intersection, segStart, segEnd))
+    /// scanOffSegment must be checked first so that intersection isnt inf!
+    if (scanBackwards(scanPt.x_, scanPt.y_, scanAngle, intersection))
     {
+        std::cout << "SCAN BACKWARDS" << std::endl;
         intersection.x_ = std::numeric_limits<float>::infinity(); 
         intersection.y_ = std::numeric_limits<float>::infinity(); 
         return;
@@ -146,8 +164,21 @@ bool LaserScanner::scanBackwards(float scannerX, float scannerY,
     // Find angle of intersection point, relative to scanner point.             
     // Translate laser scan line to intersect origin.                           
     // Take that angle with atan2                                               
+    
+    // Check first if scanner is basically on top of the line:
+    if ( CommonMath::approxEqual(intersection.x_, scannerX, 3) && 
+         CommonMath::approxEqual(intersection.y_, scannerY, 3) )
+        return false;
+    
+    std::cout << "intersection: " << intersection.x_ << ", " << intersection.y_
+              << std::endl;
+
     float intersectionAngle = atan2( (intersection.y_ - scannerY),                
                                      (intersection.x_ - scannerX));               
+    std::cout << "scanBackwardsDEBUG: intersectAngle:" 
+              << intersectionAngle << ", scannerTheta (in rad): "
+              << CommonMath::tuneAngle(scannerTheta)
+              << std::endl;
 
     if (!CommonMath::approxEqual(intersectionAngle, 
          CommonMath::tuneAngle(scannerTheta), 3))            
@@ -159,8 +190,15 @@ bool LaserScanner::scanBackwards(float scannerX, float scannerY,
 bool LaserScanner::scanOffSegment(Point& intersection,        
                                   Point& segStart, Point& segEnd)
 {                                                                               
-    if ((intersection.x_ < std::min(segStart.x_,segEnd.x_)) ||                              
-          (intersection.x_ > std::max(segStart.x_, segEnd.x_)))                             
+    // Throw out intersections at infinity:
+    if (std::abs(intersection.x_) == std::numeric_limits<float>::infinity())
+        return true; 
+    if (std::abs(intersection.y_) == std::numeric_limits<float>::infinity())
+        return true; 
+
+    // Check if range exceeded in x:
+    if ((intersection.x_ < std::min(segStart.x_,segEnd.x_)) || 
+          (intersection.x_ > std::max(segStart.x_, segEnd.x_)))
     {                                                                           
         // handle rounding error cases for narrow ranges of segX1 and segX2     
         if (!(CommonMath::approxEqual(segStart.x_, segEnd.x_, 3) &&    
@@ -169,10 +207,10 @@ bool LaserScanner::scanOffSegment(Point& intersection,
             return true;                                                        
         }                                                                       
     }                                                                           
-    if ((intersection.y_ < std::min(segStart.y_,segEnd.y_)) ||                              
-          (intersection.y_ > std::max(segStart.y_,segEnd.y_)))                              
+    // Check if range exceeded in y:
+    if ((intersection.y_ < std::min(segStart.y_,segEnd.y_)) ||
+          (intersection.y_ > std::max(segStart.y_,segEnd.y_))) 
     {                                                                           
-        //std::cout << "Y triggered" << std::endl;                                
         // handle rounding error cases for narrow ranges of segY1 and segY2     
         if (!(CommonMath::approxEqual(segStart.y_, segEnd.y_, 3) &&
             CommonMath::approxEqual(segStart.y_, intersection.y_, 3)))

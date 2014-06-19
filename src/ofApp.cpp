@@ -5,8 +5,8 @@
 void ofApp::setup(){	
 	ofBackground(ofColor::dimGray);	
 	ofSetFrameRate(60);
-    robotParticles_ = new Particles(5);
-    robotParticles_->initParticles(8,8);
+//    robotParticles_ = new Particles(5);
+//    robotParticles_->initParticles(8,8);
 
     // Setup mapSegs_ path parameters
     mapSegs_.setFilled(false);
@@ -17,6 +17,10 @@ void ofApp::setup(){
     theMap_->addFeature("roomOutline.txt");
     theMap_->addFeature("box.txt");
     
+    // for testing:
+    Particle testPart{2, 2, 0};
+    testPart.laser_.takeScan(testPart.pose_, *theMap_);
+    
 }
 
 //--------------------------------------------------------------
@@ -25,6 +29,7 @@ void ofApp::update(){
 
 void ofApp::draw(){
     // FIXME: change Map& to Map pointer... maybe.
+    /*
     for (size_t numParts = 0; numParts < 5; ++numParts)
     {
     std::cout << "particle " << numParts << std::endl;
@@ -77,6 +82,7 @@ void ofApp::draw(){
 
     laser.draw();
     drawMap();
+*/
 
 }
 

@@ -7,6 +7,7 @@
 
 #include "ofMain.h"
 #include "particles.hpp"
+#include "particle.hpp"
 #include "map.hpp"
 #include <iostream> // FIXME: remove after debugging
 

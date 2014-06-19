@@ -5,6 +5,8 @@
  */
 #include "commonMath.hpp"
 
+//FIXME: change std::numeric_limits<float>::infinity to a constexpr
+
 bool CommonMath::parallel(float slopeA, float slopeB)
 {
     // round huge and tiny numbers to inf and zero respectively:
@@ -51,7 +53,7 @@ float CommonMath::tuneAngle(float angleInDeg)
 float CommonMath::round(float input)                                                    
 {                                                                               
     if (input > largeVal_)                                                          
-        return std::numeric_limits<float>::infinity();                          
+        return std::numeric_limits<float>::infinity(); 
     if (input < -largeVal_)                                                          
         return -std::numeric_limits<float>::infinity();                          
     if (std::abs(input) < smallVal_) 
@@ -59,9 +61,11 @@ float CommonMath::round(float input)
     return input;                                                               
 } 
 
+
 bool CommonMath::approxEqual(float approxVal, float actualVal,
                             float percentError)
 {
+    // Avoid divide-by-zero.
     if( round(actualVal) == 0.0)                        
     {                                                                       
         return (round(approxVal) == 0.0);               
