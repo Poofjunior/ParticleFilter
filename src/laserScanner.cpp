@@ -148,22 +148,17 @@ void LaserScanner::getIntersection(Point& intersection,
     // Run last checks:
     if (scanOffSegment(intersection, segStart, segEnd))
     {
-/*
         std::cout << "SCAN OFF SEGMENT" << std::endl;
         intersection.x_ = std::numeric_limits<float>::infinity(); 
         intersection.y_ = std::numeric_limits<float>::infinity(); 
-*/
         return;
     }
     /// scanOffSegment must be checked first so that intersection isnt inf!
     if (scanBackwards(scanPt.x_, scanPt.y_, scanAngleR, intersection))
     {
         std::cout << "SCAN BACKWARDS" << std::endl;
-/*
         intersection.x_ = std::numeric_limits<float>::infinity(); 
         intersection.y_ = std::numeric_limits<float>::infinity(); 
-*/
-
         return;
     }
     return;    
@@ -197,6 +192,7 @@ bool LaserScanner::scanBackwards(float scannerX, float scannerY,
     if (!CommonMath::approxEqual(intersectionAngle, 
          scannerThetaR, 3))            
         return true;                                                            
+
     return false;                                                               
 }
 

@@ -5,6 +5,7 @@
 void ofApp::setup(){	
 	ofBackground(ofColor::dimGray);	
 	ofSetFrameRate(60);
+// TODO: enable this later
 //    robotParticles_ = new Particles(5);
 //    robotParticles_->initParticles(8,8);
 
@@ -14,11 +15,13 @@ void ofApp::setup(){
     mapSegs_.setStrokeWidth(5);
     // Create a map with one feature
     theMap_ = new Map();
-    theMap_->addFeature("roomOutlineMinimal.txt");
-//    theMap_->addFeature("box.txt");
+    theMap_->addFeature("roomOutline.txt");
+    theMap_->addFeature("box.txt");
     
+// TODO: disable this later and remove testPart_ data member
     // for testing:
-    testPart_ = new Particle{3.5, 3, 0};
+    testPart_ = new Particle{1.125, 2.25, -1};
+    // FIXME: laser scanner returns inf insead of zero when on top of a wall
 }
 
 //--------------------------------------------------------------
@@ -49,9 +52,11 @@ void ofApp::draw(){
                pixelsPerMeter_ * testPart_->laser_.intersections_[beamIter].x_,
                pixelsPerMeter_ * testPart_->laser_.intersections_[beamIter].y_);
 
+/*
                std::cout << testPart_->laser_.intersections_[beamIter].x_ << ","
                         << testPart_->laser_.intersections_[beamIter].y_
                         << std::endl;
+*/
         }
     }
     laser.draw();
