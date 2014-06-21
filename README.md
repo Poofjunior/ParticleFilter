@@ -1,9 +1,8 @@
 ParticleFilter
 ==============
+a 2d particle filter implemented with OpenFrameworks, and a work in progress:
 
-a 2d particle filter implemented with OpenFrameworks
-
-a work in progress:
+![laserScanner](https://raw.githubusercontent.com/Poofjunior/ParticleFilter/master/pics/particleFilter.png)
 
 ### Current Status
 * Maps are represented as features, where a feature is a connected set of
