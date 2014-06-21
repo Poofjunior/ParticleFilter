@@ -11,6 +11,7 @@ LaserScanner::LaserScanner(float angleSpread, size_t numPoints)
 {
     // Create the array for scan distances:
     scan_ = new float[numPoints];
+    intersections_ = new Point[numPoints];
     step_ = angleSpread / (numPoints - 1);
 }
 
@@ -18,13 +19,15 @@ LaserScanner::LaserScanner(float angleSpread, size_t numPoints)
 LaserScanner::~LaserScanner()
 {
     delete [] scan_;
+    delete [] intersections_;
 }
 
 void LaserScanner::takeScan(Pose& pose, Map& map)
 {
     std::cout << std::endl;
-    float angleToMeas = pose.theta_ - (angleSpread_/2);
+    float angleToMeasR = (pose.theta_ - (angleSpread_/2));
     Point intersection;
+    Point bestIntersection;
     Point scanPt(pose.x_, pose.y_); 
     Point segStart, segEnd;
     float distToSeg;
@@ -34,9 +37,12 @@ void LaserScanner::takeScan(Pose& pose, Map& map)
     // For all angles, for all map segs, get closest wall dist. 
     for(size_t beamIndex = 0; beamIndex < numPoints_; ++beamIndex)
     {
-        std::cout << "angleToMeas: " << angleToMeas << std::endl;
+        angleToMeasR = CommonMath::tuneAngle(angleToMeasR);
+        std::cout << "angleToMeasR: " << angleToMeasR << std::endl;
         // Find minimum with a best-so-far iteration method.
         minDistSoFar = std::numeric_limits<float>::infinity();
+        bestIntersection.x_ = std::numeric_limits<float>::infinity(); 
+        bestIntersection.y_ = std::numeric_limits<float>::infinity(); 
 
         // Nested for-loop to iterate through all points via their features
         for (auto featureIter = map.features_.begin(); 
@@ -57,31 +63,31 @@ void LaserScanner::takeScan(Pose& pose, Map& map)
                     if(nextPtIter == featureIter->points_.end())
                         segEnd = featureIter->points_.front();
 
-                    getIntersection(intersection, scanPt, angleToMeas,  
+                    getIntersection(intersection, scanPt, angleToMeasR,  
                                     segStart, segEnd); 
-
-                    std::cout << "scanPt: " << scanPt.x_ << ", " 
-                              << scanPt.y_ 
-                              << " segStart: (" << segStart.x_ << "," 
-                              << segStart.y_ 
-                              << ") segEnd: (" << segEnd.x_ << ", " 
-                              << segEnd.y_ << ")" << " intersection: ("
-                              << intersection.x_ << ", " << intersection.y_ 
-                              << ")" 
-                              << std::endl;
-                    std::cout << std::endl;
+                    
+    std::cout << "segStart: " << segStart.x_ << ", " << segStart.y_
+              << " segEnd: " << segEnd.x_ << ", " << segEnd.y_
+              << std::endl;
+    std::cout << "intersection: " << intersection.x_ << ", " 
+              << intersection.y_ << std::endl;
 
                     distToSeg = getDist(scanPt, intersection);
 
                     if (distToSeg < minDistSoFar)
+                    {
                         minDistSoFar = distToSeg;
+                        bestIntersection = intersection;
+                    }
                 }
             }
         }
+        intersections_[beamIndex] = bestIntersection;
         scan_[beamIndex] = minDistSoFar; 
-        angleToMeas += step_;
-        std::cout << std::endl;
-        std::cout << std::endl;
+        angleToMeasR += step_;
+        std::cout << "minDist:" << minDistSoFar <<  std::endl;
+        std::cout << "   bestIntersection: " << bestIntersection.x_  << "," 
+                  << bestIntersection.y_ << std::endl;
     }
     
 }
@@ -94,10 +100,10 @@ float LaserScanner::getDist(Point& pt1, Point& pt2)
 
 void LaserScanner::getIntersection(Point& intersection, 
                                    Point& scanPt, 
-                                   float scanAngle, 
+                                   float scanAngleR, 
                                    Point& segStart, Point& segEnd)
 {
-    float scannerM = round(tan(CommonMath::tuneAngle(scanAngle)));
+    float scannerM = (tan(scanAngleR));
     float segmentM = (segEnd.y_ - segStart.y_)/(segEnd.x_ - segStart.x_);
     
     if (CommonMath::parallel(scannerM, segmentM))
@@ -129,10 +135,12 @@ void LaserScanner::getIntersection(Point& intersection,
         std::cout << "NORMAL INTERCEPT" << std::endl;
         float laserYInt = scannerM * (-scanPt.x_) + scanPt.y_;
         float segmentYInt = segmentM* (-segStart.x_) + segStart.y_;
+/*
         std::cout << "scannerM: " << scannerM << std::endl;
         std::cout << "segmentM: " << segmentM << std::endl;
         std::cout << "laserYInt: " << laserYInt << std::endl;
         std::cout << "segmentYInt: " << segmentYInt << std::endl;
+*/
         intersection.x_ = (segmentYInt - laserYInt)/(scannerM - segmentM);
         intersection.y_ = scannerM * intersection.x_ + laserYInt;
     }
@@ -140,25 +148,31 @@ void LaserScanner::getIntersection(Point& intersection,
     // Run last checks:
     if (scanOffSegment(intersection, segStart, segEnd))
     {
+/*
         std::cout << "SCAN OFF SEGMENT" << std::endl;
         intersection.x_ = std::numeric_limits<float>::infinity(); 
         intersection.y_ = std::numeric_limits<float>::infinity(); 
+*/
         return;
     }
     /// scanOffSegment must be checked first so that intersection isnt inf!
-    if (scanBackwards(scanPt.x_, scanPt.y_, scanAngle, intersection))
+    if (scanBackwards(scanPt.x_, scanPt.y_, scanAngleR, intersection))
     {
         std::cout << "SCAN BACKWARDS" << std::endl;
+/*
         intersection.x_ = std::numeric_limits<float>::infinity(); 
         intersection.y_ = std::numeric_limits<float>::infinity(); 
+*/
+
         return;
     }
     return;    
 }
 
+//FIXME:  check consistency across all radian and degree conversions
 
 bool LaserScanner::scanBackwards(float scannerX, float scannerY, 
-                                 float scannerTheta, 
+                                 float scannerThetaR, 
                                  Point& intersection)
 {
     // Find angle of intersection point, relative to scanner point.             
@@ -169,19 +183,19 @@ bool LaserScanner::scanBackwards(float scannerX, float scannerY,
     if ( CommonMath::approxEqual(intersection.x_, scannerX, 3) && 
          CommonMath::approxEqual(intersection.y_, scannerY, 3) )
         return false;
-    
-    std::cout << "intersection: " << intersection.x_ << ", " << intersection.y_
-              << std::endl;
 
     float intersectionAngle = atan2( (intersection.y_ - scannerY),                
                                      (intersection.x_ - scannerX));               
-    std::cout << "scanBackwardsDEBUG: intersectAngle:" 
-              << intersectionAngle << ", scannerTheta (in rad): "
-              << CommonMath::tuneAngle(scannerTheta)
+
+/*
+    std::cout << "scanBackwardsDEBUG: intersectAngle (inrad):" 
+              << intersectionAngle << ", scannerThetaR (in rad): "
+              << scannerThetaR
               << std::endl;
+*/
 
     if (!CommonMath::approxEqual(intersectionAngle, 
-         CommonMath::tuneAngle(scannerTheta), 3))            
+         scannerThetaR, 3))            
         return true;                                                            
     return false;                                                               
 }
@@ -204,6 +218,7 @@ bool LaserScanner::scanOffSegment(Point& intersection,
         if (!(CommonMath::approxEqual(segStart.x_, segEnd.x_, 3) &&    
             CommonMath::approxEqual(segStart.x_, intersection.x_, 3)))
         {                                                                       
+            std::cout << "approx Equal Triggered!" << std::endl;
             return true;                                                        
         }                                                                       
     }                                                                           

@@ -23,12 +23,13 @@ class LaserScanner {
 
 public:
 /** 
- * \fn LaserScanner(float angleSpread = 120, size_t numPoints = 5);
+ * \fn LaserScanner(float angleSpread = 2.0943951023931953, 
+ *                  size_t numPoints = 5);
  * \brief constructs a laser scanner object with specified parameters
  * \details for a single laser dot, choose and angleSpread of 0 and
- * numPoints = 5
+ * numPoints = 1. Default is 5 numPoints and 2.094395... radians (120 deg).
  */
-    LaserScanner(float angleSpread = 120, size_t numPoints = 5);
+    LaserScanner(float angleSpread = 2.0943951023931953, size_t numPoints = 5);
     ~LaserScanner();
     // TODO: Disable the default copy constructor.
 
@@ -66,10 +67,12 @@ public:
 
     float * scan_;   ///< the laser scanner distances within the range: 
                     ///< (-angleSpread / 2) < scan[i] < (anglesSpread/2) 
+    Point * intersections_;   ///< the laser scanner corresponding
+                              ///< intersections with the environment. 
     size_t numPoints_;
 
 private:
-    float angleSpread_;
+    float angleSpread_; ///< angle (in radians!) spanned by min and max beams
     float step_;      ///< angle (in radians!) between scan points
 };
 #endif // LASERSCANNER_HPP 

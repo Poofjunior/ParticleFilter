@@ -26,7 +26,7 @@ public:
 
     float x_;
     float y_;
-    float theta_;
+    float theta_; ///< units in radians!!
 
 };
 #endif // POSE_HPP 

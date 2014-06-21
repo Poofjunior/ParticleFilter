@@ -32,19 +32,17 @@ float CommonMath::tuneAngle(float angleInDeg)
 {
     float newAngle  = angleInDeg;
     // Map to circle range:
-    while (newAngle > 360)
-        newAngle -= 360;    
-    while (newAngle < -360)
-        newAngle += 360;    
+    while (newAngle > 2*M_PI)
+        newAngle -= 2*M_PI;    
+    while (newAngle < -2*M_PI)
+        newAngle += 2*M_PI;    
 
-    // Convert to -Pi/2 to Pi/2 range.
-    if (newAngle > 180.)
-        newAngle -= 360.;
-    if (newAngle < -180.)
-        newAngle += 360.;
+    // Convert to -Pi to Pi range. FIXME: should this be pi/2 to pi/2 range??
+    if (newAngle > M_PI)
+        newAngle -= 2*M_PI;
+    if (newAngle < -M_PI)
+        newAngle += 2*M_PI;
 
-    // Convert to radian.
-    newAngle *= (M_PI/180.);
     return newAngle;
 
 }

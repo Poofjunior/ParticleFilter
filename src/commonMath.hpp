@@ -29,7 +29,10 @@ float round(float input);
 
 
 bool approxEqual( float val1, float val2, float percentError);
-
+/**
+ * \fn tuneAngle(float angle)
+ * \brief converts input float (in radians) to the correct range of -Pi to Pi.
+ */
 float tuneAngle(float angle);
 };
 

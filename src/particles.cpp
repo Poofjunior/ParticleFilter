@@ -26,9 +26,9 @@ void Particles::initParticles(float xmax, float ymax)
 {
     std::default_random_engine generator;
     //FIXME: change to real distributions, not int distributions.
-    std::uniform_int_distribution<int> distributionX(0,xmax);
-    std::uniform_int_distribution<int> distributionY(0,ymax);
-    std::uniform_int_distribution<int> distributionTheta(0,360);
+    std::uniform_real_distribution<float> distributionX(0,xmax);
+    std::uniform_real_distribution<float> distributionY(0,ymax);
+    std::uniform_real_distribution<float> distributionTheta(-M_PI, M_PI);
 
     for(size_t eachPart = 0; eachPart < numParticles_; ++eachPart)
     {

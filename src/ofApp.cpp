@@ -14,20 +14,50 @@ void ofApp::setup(){
     mapSegs_.setStrokeWidth(5);
     // Create a map with one feature
     theMap_ = new Map();
-    theMap_->addFeature("roomOutline.txt");
-    theMap_->addFeature("box.txt");
+    theMap_->addFeature("roomOutlineMinimal.txt");
+//    theMap_->addFeature("box.txt");
     
     // for testing:
-    Particle testPart{2, 2, 0};
-    testPart.laser_.takeScan(testPart.pose_, *theMap_);
-    
+    testPart_ = new Particle{3.5, 3, 0};
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
+
+    testPart_->laser_.takeScan(testPart_->pose_, *theMap_);
 }
 
 void ofApp::draw(){
+
+
+    ofPath laser;
+    Point laserLoc(testPart_->pose_.x_,testPart_->pose_.y_);
+    Point intersection;
+    laser.setFilled(false);
+    laser.setStrokeColor(ofColor::red);
+    laser.setStrokeWidth(1);
+
+
+    for(size_t beamIter = 0; beamIter < testPart_->laser_.numPoints_; ++beamIter)
+    {
+        laser.moveTo(pixelsPerMeter_ * laserLoc.x_, 
+                     pixelsPerMeter_ * laserLoc.y_);
+        if(!(testPart_->laser_.scan_[beamIter] == 
+           std::numeric_limits<float>::infinity()))
+        {
+            laser.lineTo(
+               pixelsPerMeter_ * testPart_->laser_.intersections_[beamIter].x_,
+               pixelsPerMeter_ * testPart_->laser_.intersections_[beamIter].y_);
+
+               std::cout << testPart_->laser_.intersections_[beamIter].x_ << ","
+                        << testPart_->laser_.intersections_[beamIter].y_
+                        << std::endl;
+        }
+    }
+    laser.draw();
+    drawMap();
+
+
     // FIXME: change Map& to Map pointer... maybe.
     /*
     for (size_t numParts = 0; numParts < 5; ++numParts)
