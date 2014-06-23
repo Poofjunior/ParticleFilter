@@ -26,6 +26,7 @@ class ofApp : public ofBaseApp{
         void setup();
         void update();
         void draw();
+    
         
         void mouseDragged(int x, int y, int button);
         void mousePressed(int x, int y, int button);
@@ -43,6 +44,12 @@ class ofApp : public ofBaseApp{
  * \brief iterates through all particles and draws them.
  */
         void drawParticle( float x, float y, float theta);
+
+/**
+ * \fn void drawLaser( Particle& particle)
+ *  \brief draws the laser for a particle
+ */
+        void drawLaser(Particle& theParticle);
 
     private:
         static constexpr float pixelsPerMeter_ = 100.;
