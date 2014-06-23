@@ -9,6 +9,7 @@
 
 bool CommonMath::parallel(float slopeA, float slopeB)
 {
+    // TODO: rounding here is probably redundant at this point.
     // round huge and tiny numbers to inf and zero respectively:
     float roundedA = round(slopeA);
     float roundedB = round(slopeB);

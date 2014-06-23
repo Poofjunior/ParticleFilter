@@ -66,11 +66,13 @@ void LaserScanner::takeScan(Pose& pose, Map& map)
                     getIntersection(intersection, scanPt, angleToMeasR,  
                                     segStart, segEnd); 
                     
+/*
     std::cout << "segStart: " << segStart.x_ << ", " << segStart.y_
               << " segEnd: " << segEnd.x_ << ", " << segEnd.y_
               << std::endl;
     std::cout << "intersection: " << intersection.x_ << ", " 
               << intersection.y_ << std::endl;
+*/
 
                     distToSeg = getDist(scanPt, intersection);
 
@@ -103,8 +105,9 @@ void LaserScanner::getIntersection(Point& intersection,
                                    float scanAngleR, 
                                    Point& segStart, Point& segEnd)
 {
-    float scannerM = (tan(scanAngleR));
-    float segmentM = (segEnd.y_ - segStart.y_)/(segEnd.x_ - segStart.x_);
+    float scannerM = CommonMath::round(tan(scanAngleR));
+    float segmentM = CommonMath::round((segEnd.y_ - segStart.y_)
+                                      /(segEnd.x_ - segStart.x_));
     
     if (CommonMath::parallel(scannerM, segmentM))
     {
@@ -118,7 +121,7 @@ void LaserScanner::getIntersection(Point& intersection,
     if (scannerM == std::numeric_limits<float>::infinity()) 
     {
         std::cout << "laserVertical" << std::endl;
-        intersection.x_ = std::numeric_limits<float>::infinity(); 
+        //intersection.x_ = std::numeric_limits<float>::infinity(); 
         yInt = segmentM * (-segStart.x_) + segStart.y_;
         intersection.x_ = scanPt.x_;
         intersection.y_ = segmentM * scanPt.x_ + yInt;
@@ -135,15 +138,19 @@ void LaserScanner::getIntersection(Point& intersection,
         std::cout << "NORMAL INTERCEPT" << std::endl;
         float laserYInt = scannerM * (-scanPt.x_) + scanPt.y_;
         float segmentYInt = segmentM* (-segStart.x_) + segStart.y_;
-/*
+
+
+        intersection.x_ = CommonMath::round((segmentYInt - laserYInt)
+                                           /(scannerM - segmentM));
+        intersection.y_ = CommonMath::round(scannerM * intersection.x_ 
+                                            + laserYInt);
+    }
         std::cout << "scannerM: " << scannerM << std::endl;
         std::cout << "segmentM: " << segmentM << std::endl;
-        std::cout << "laserYInt: " << laserYInt << std::endl;
-        std::cout << "segmentYInt: " << segmentYInt << std::endl;
-*/
-        intersection.x_ = (segmentYInt - laserYInt)/(scannerM - segmentM);
-        intersection.y_ = scannerM * intersection.x_ + laserYInt;
-    }
+        //std::cout << "laserYInt: " << laserYInt << std::endl;
+        //std::cout << "segmentYInt: " << segmentYInt << std::endl;
+        std::cout << "intersection: (" << intersection.x_ << ", " 
+                  << intersection.y_ << ")" << std::endl;
     
     // Run last checks:
     if (scanOffSegment(intersection, segStart, segEnd))
@@ -164,7 +171,6 @@ void LaserScanner::getIntersection(Point& intersection,
     return;    
 }
 
-//FIXME:  check consistency across all radian and degree conversions
 
 bool LaserScanner::scanBackwards(float scannerX, float scannerY, 
                                  float scannerThetaR, 
@@ -175,8 +181,9 @@ bool LaserScanner::scanBackwards(float scannerX, float scannerY,
     // Take that angle with atan2                                               
     
     // Check first if scanner is basically on top of the line:
-    if ( CommonMath::approxEqual(intersection.x_, scannerX, 3) && 
-         CommonMath::approxEqual(intersection.y_, scannerY, 3) )
+    // FIXME: rewrite this function. It's inconsistent.
+    if ( CommonMath::approxEqual(intersection.x_, scannerX, 1) && 
+         CommonMath::approxEqual(intersection.y_, scannerY, 1) )
         return false;
 
     float intersectionAngle = atan2( (intersection.y_ - scannerY),                

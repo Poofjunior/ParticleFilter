@@ -12,15 +12,17 @@ void ofApp::setup(){
     // Setup mapSegs_ path parameters
     mapSegs_.setFilled(false);
     mapSegs_.setStrokeColor(ofColor::lightSlateGrey);
-    mapSegs_.setStrokeWidth(5);
+    mapSegs_.setStrokeWidth(2);
     // Create a map with one feature
     theMap_ = new Map();
     theMap_->addFeature("roomOutline.txt");
-    theMap_->addFeature("box.txt");
+    //theMap_->addFeature("box.txt");
     
 // TODO: disable this later and remove testPart_ data member
     // for testing:
-    testPart_ = new Particle{1.125, 2.25, -1};
+    //testPart_ = new Particle{1, 2.25, -1};
+    testPart_ = new Particle{1.5, 3.9, -(M_PI/2.)};
+    //testPart_ = new Particle{1.5, 2, -(M_PI/2.)}; // vertical laser works
     // FIXME: laser scanner returns inf insead of zero when on top of a wall
 }
 
