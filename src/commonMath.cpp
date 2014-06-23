@@ -23,7 +23,7 @@ bool CommonMath::parallel(float slopeA, float slopeB)
         return true;
 
     // check if both lines are equal to within 1% 
-    if (approxEqual(roundedA, roundedB, 1))
+    if (almostEqual(roundedA, roundedB, ulp_))
         return true;
 
     return false;
@@ -61,15 +61,12 @@ float CommonMath::round(float input)
 } 
 
 
-bool CommonMath::approxEqual(float approxVal, float actualVal,
-                            float percentError)
+bool CommonMath::almostEqual(float x, float y, int ulp)
 {
-    // Avoid divide-by-zero.
-    if( round(actualVal) == 0.0)                        
-    {                                                                       
-        return (round(approxVal) == 0.0);               
-    }                                                                       
-                                                                            
-    return (((std::abs(approxVal - actualVal) / std::abs(actualVal)) * 100.0) 
-           < percentError);  
+    // Compare all subnormal values (like infinity) exactly.
+    if (!std::isnormal(x) || !std::isnormal(y))                                 
+        return x == y;                                                          
+                                                                                
+    return std::abs(x - y) <=                                                   
+        std::numeric_limits<float>::epsilon() * std::abs(x + y) * ulp;
 }

@@ -181,9 +181,8 @@ bool LaserScanner::scanBackwards(float scannerX, float scannerY,
     // Take that angle with atan2                                               
     
     // Check first if scanner is basically on top of the line:
-    // FIXME: rewrite this function. It's inconsistent.
-    if ( CommonMath::approxEqual(intersection.x_, scannerX, 1) && 
-         CommonMath::approxEqual(intersection.y_, scannerY, 1) )
+    if (CommonMath::almostEqual(intersection.x_, scannerX, CommonMath::ulp_) && 
+        CommonMath::almostEqual(intersection.y_, scannerY, CommonMath::ulp_) )
         return false;
 
     float intersectionAngle = atan2( (intersection.y_ - scannerY),                
@@ -196,8 +195,8 @@ bool LaserScanner::scanBackwards(float scannerX, float scannerY,
               << std::endl;
 */
 
-    if (!CommonMath::approxEqual(intersectionAngle, 
-         scannerThetaR, 3))            
+    if (!CommonMath::almostEqual(intersectionAngle, 
+         scannerThetaR, CommonMath::ulp_))            
         return true;                                                            
 
     return false;                                                               
@@ -218,10 +217,11 @@ bool LaserScanner::scanOffSegment(Point& intersection,
           (intersection.x_ > std::max(segStart.x_, segEnd.x_)))
     {                                                                           
         // handle rounding error cases for narrow ranges of segX1 and segX2     
-        if (!(CommonMath::approxEqual(segStart.x_, segEnd.x_, 3) &&    
-            CommonMath::approxEqual(segStart.x_, intersection.x_, 3)))
+        if (!(CommonMath::almostEqual(segStart.x_, segEnd.x_, CommonMath::ulp_)
+            && CommonMath::almostEqual(segStart.x_, intersection.x_, 
+                                       CommonMath::ulp_)))
         {                                                                       
-            std::cout << "approx Equal Triggered!" << std::endl;
+            std::cout << "almostEqual Triggered!" << std::endl;
             return true;                                                        
         }                                                                       
     }                                                                           
@@ -230,8 +230,9 @@ bool LaserScanner::scanOffSegment(Point& intersection,
           (intersection.y_ > std::max(segStart.y_,segEnd.y_))) 
     {                                                                           
         // handle rounding error cases for narrow ranges of segY1 and segY2     
-        if (!(CommonMath::approxEqual(segStart.y_, segEnd.y_, 3) &&
-            CommonMath::approxEqual(segStart.y_, intersection.y_, 3)))
+        if (!(CommonMath::almostEqual(segStart.y_, segEnd.y_, CommonMath::ulp_)
+            && CommonMath::almostEqual(segStart.y_, intersection.y_, 
+                                       CommonMath::ulp_)))
         {                                                                       
             return true;                                                        
         }                                                                       

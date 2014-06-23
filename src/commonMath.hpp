@@ -12,6 +12,7 @@ namespace CommonMath {
 
 const float largeVal_ = 1000; 
 const float smallVal_ = 0.001;
+const int ulp_ = 10000;
 
 /**
  * \fn parallel(float slopeA, slopeB)
@@ -28,7 +29,16 @@ bool parallel( float slopeA, float slopeB);
 float round(float input);
 
 
-bool approxEqual( float val1, float val2, float percentError);
+/**
+ * bool almostEqual( float val1, float val2, int ulp)
+ * \brief true if two numbers are close enough (for this algorithm) to be 
+ *        considered equal
+ * \param ulp is the number of units in the last place 
+ * \details href='http://en.cppreference.com/w/cpp/types/numeric_limits/epsilon'>algorithm reference</a>
+ *
+ */
+bool almostEqual( float val1, float val2, int ulp);
+
 /**
  * \fn tuneAngle(float angle)
  * \brief converts input float (in radians) to the correct range of -Pi to Pi.

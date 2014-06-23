@@ -21,7 +21,7 @@ void ofApp::setup(){
 // TODO: disable this later and remove testPart_ data member
     // for testing:
     //testPart_ = new Particle{1, 2.25, -1};
-    testPart_ = new Particle{1.5, 3.9, -(M_PI/2.)};
+    testPart_ = new Particle{1.5, 3.99, -(M_PI/2.)};
     //testPart_ = new Particle{1.5, 2, -(M_PI/2.)}; // vertical laser works
     // FIXME: laser scanner returns inf insead of zero when on top of a wall
 }
