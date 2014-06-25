@@ -15,13 +15,13 @@ void ofApp::setup(){
     mapSegs_.setStrokeWidth(2);
     // Create a map with one feature
     theMap_ = new Map();
-    theMap_->addFeature("roomOutline.txt");
-    theMap_->addFeature("box.txt");
+    theMap_->addFeature("roomOutlineVert.txt");
+    //theMap_->addFeature("box.txt");
     
 // TODO: disable this later and remove testPart_ data member
     // for testing:
     //testPart_ = new Particle{1.5, 3.99, -(M_PI/2.)};
-    testPart_ = new Particle{1, 2, -(M_PI/2.)};
+    testPart_ = new Particle{2, 2, -(M_PI/2.)};
     // FIXME: laser scanner returns inf insead of zero when on top of a wall
 }
 

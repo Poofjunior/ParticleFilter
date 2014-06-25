@@ -24,7 +24,7 @@ LaserScanner::~LaserScanner()
 
 void LaserScanner::takeScan(Pose& pose, Map& map)
 {
-    std::cout << std::endl;
+    //std::cout << std::endl;
     float angleToMeasR = (pose.theta_ - (angleSpread_/2));
     Point intersection;
     Point bestIntersection;
@@ -77,8 +77,10 @@ void LaserScanner::takeScan(Pose& pose, Map& map)
                 }
             }
         }
-        std::cout << "intersection: " << intersection.x_ << ", " 
-            << intersection.y_ << std::endl;
+/*
+        std::cout << "intersection: " << bestIntersection.x_ << ", " 
+            << bestIntersection.y_ << std::endl;
+*/
         intersections_[beamIndex] = bestIntersection;
         scan_[beamIndex] = minDistSoFar; 
         angleToMeasR += step_;
@@ -119,14 +121,14 @@ void LaserScanner::getIntersection(Point& intersection,
     // make segStart, segEnd inputs to this function!!!
     if (scanColinear(intersection, scanPt))
     {
-        std::cout << "scanColinear!" << std::endl;
+        //std::cout << "scanColinear!" << std::endl;
         intersection.x_ = scanPt.x_;
         intersection.y_ = scanPt.y_; 
         return;
     }
     
     float yInt;
-    if (scannerM == std::numeric_limits<float>::infinity()) 
+    if (std::abs(scannerM) == std::numeric_limits<float>::infinity()) 
     {
         //std::cout << "laserVertical" << std::endl;
         yInt = segmentM * (-segStart.x_) + segStart.y_;
@@ -172,7 +174,9 @@ void LaserScanner::getIntersection(Point& intersection,
     /// scanOffSegment must be checked first so that intersection isnt inf!
     if (scanBackwards(scanPt.x_, scanPt.y_, scanAngleR, intersection))
     {
-        //std::cout << "SCAN BACKWARDS" << std::endl;
+        std::cout << "SCAN BACKWARDS" << std::endl;
+        std::cout << "scannerM: " << scannerM << std::endl;
+        std::cout << "segmentM: " << segmentM << std::endl;
         intersection.x_ = std::numeric_limits<float>::infinity(); 
         intersection.y_ = std::numeric_limits<float>::infinity(); 
         return;
