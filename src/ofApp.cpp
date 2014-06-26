@@ -6,8 +6,8 @@ void ofApp::setup(){
 	ofBackground(ofColor::dimGray);	
 	ofSetFrameRate(60);
 // TODO: enable this later
-//    robotParticles_ = new Particles(5);
-//    robotParticles_->initParticles(8,8);
+    robotParticles_ = new Particles(5);
+    robotParticles_->initParticles(8,8);
 
     // Setup mapSegs_ path parameters
     mapSegs_.setFilled(false);
@@ -15,24 +15,24 @@ void ofApp::setup(){
     mapSegs_.setStrokeWidth(2);
     // Create a map with one feature
     theMap_ = new Map();
-    theMap_->addFeature("roomOutlineVert.txt");
-    //theMap_->addFeature("box.txt");
+    theMap_->addFeature("roomOutline.txt");
+    theMap_->addFeature("box.txt");
     
 // TODO: disable this later and remove testPart_ data member
     // for testing:
     //testPart_ = new Particle{1.5, 3.99, -(M_PI/2.)};
-    testPart_ = new Particle{2, 2, -(M_PI/2.)};
-    // FIXME: laser scanner returns inf insead of zero when on top of a wall
+    //testPart_ = new Particle{2.01, 2, -(M_PI/2.)};
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
 
-    testPart_->laser_.takeScan(testPart_->pose_, *theMap_);
+    //testPart_->laser_.takeScan(testPart_->pose_, *theMap_);
 }
 
+
 void ofApp::draw(){
-/*
+
 	for (size_t eachPart = 0; eachPart < robotParticles_->numParticles_; 
         ++eachPart)
     {
@@ -41,8 +41,8 @@ void ofApp::draw(){
                      robotParticles_->theParticles_[eachPart]->pose_.theta_);
     }
 
-*/
-    drawLaser(*testPart_);
+
+    //drawLaser(*testPart_);
     drawMap();
 
 }
@@ -108,7 +108,7 @@ void ofApp::drawParticle( float x, float y, float theta)
     // Create a triangle centered at the origin.
     myTri.triangle(-2, -5, -2, 5, 12, 0);
     // Rotate first, since rotation is about an axis. Then, translate
-    myTri.rotate(theta, ofVec3f(0,0,1));
+    myTri.rotate(theta*(180./M_PI), ofVec3f(0,0,1));
     // Scale triangle appropriately.
     myTri.translate(ofPoint((x * pixelsPerMeter_), (y * pixelsPerMeter_), 0));
     myTri.draw();

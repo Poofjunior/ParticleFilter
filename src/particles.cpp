@@ -24,7 +24,7 @@ Particles::~Particles()
 
 void Particles::initParticles(float xmax, float ymax)
 {
-    std::default_random_engine generator;
+    std::default_random_engine generator((unsigned int)time(0));
     //FIXME: change to real distributions, not int distributions.
     std::uniform_real_distribution<float> distributionX(0,xmax);
     std::uniform_real_distribution<float> distributionY(0,ymax);
