@@ -4,9 +4,10 @@
 //--------------------------------------------------------------
 void ofApp::setup(){	
 	ofBackground(ofColor::dimGray);	
+	//ofSetFrameRate(60);
 	ofSetFrameRate(60);
 
-    robotParticles_ = new Particles(20);
+    robotParticles_ = new Particles(200);
     robotParticles_->initParticles(8,8);
 
     // Setup mapSegs_ path parameters
@@ -24,9 +25,9 @@ void ofApp::update(){
 
 
     //getRealOdometryData()  /// OR fake it right here.
-    /// FOR TESTING: make some fake wheel movement data.
-    MotionModel::rWheelDelta_ = 0.01;
-    MotionModel::lWheelDelta_ = 0.0125;
+    /// FOR TESTING: make some fake wheel rotation data.
+    MotionModel::rWheelDelta_ = 0.5; // in radians!
+    MotionModel::lWheelDelta_ = 0.55;
 
     robotParticles_->propagateParticles();
     //robotParticles_->takeScan();
@@ -35,9 +36,11 @@ void ofApp::update(){
     robotParticles_->computeBestParticle();
 
     /// For illustration only
+    /*
     robotParticles_->bestPart_.laser_.takeScan(
                             robotParticles_->bestPart_.pose_, 
                             *theMap_);
+*/
 }
 
 
@@ -52,7 +55,7 @@ void ofApp::draw(){
     }
 
    /// FOR TESTING: draw the laser. 
-    drawLaser(robotParticles_->bestPart_);
+    //drawLaser(robotParticles_->bestPart_);
     drawParticle(robotParticles_->bestPart_.pose_.x_, 
                  robotParticles_->bestPart_.pose_.y_,
                  robotParticles_->bestPart_.pose_.theta_);
