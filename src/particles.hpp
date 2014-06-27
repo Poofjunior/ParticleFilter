@@ -13,6 +13,7 @@
 #include <math.h>
 #include "map.hpp"
 #include "particle.hpp"
+#include "motionModel.hpp"
 
 class Particles {
 public:
@@ -21,7 +22,9 @@ public:
 
     size_t numParticles_;
     Particle** theParticles_;   ///< a list of pointers to particles
+    Particle bestPart_;         ///< the average of all particle poses
 
+///TODO: initParticles should have an xmin and ymin too.
 /**
  * \fn initParticles(float xmax, float ymax)
  * \brief Generate random poses and assign them to particles.
@@ -33,7 +36,6 @@ public:
  * \fn takeScan(Map& map)
  * \brief have all particles take a scan from their pose on the map.
  */
-    // FIXME: is passing in the map the best way to do this?
     void takeScan(Map& map);
 
 /**
@@ -44,6 +46,12 @@ public:
  *          of each particle.
  */
     void propagateParticles();
+
+/**
+ * \fn void computeBestParticle()
+ * \brief computes the average pose of all particles
+ */
+    void computeBestParticle();
 };
 #endif // PARTICLES_HPP
 

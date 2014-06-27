@@ -25,7 +25,7 @@ Particles::~Particles()
 void Particles::initParticles(float xmax, float ymax)
 {
     std::default_random_engine generator((unsigned int)time(0));
-    //FIXME: change to real distributions, not int distributions.
+
     std::uniform_real_distribution<float> distributionX(0,xmax);
     std::uniform_real_distribution<float> distributionY(0,ymax);
     std::uniform_real_distribution<float> distributionTheta(-M_PI, M_PI);
@@ -52,6 +52,22 @@ void Particles::takeScan(Map& map)
 
 void Particles::propagateParticles()
 {
-    // FIXME: write this function
+    for(size_t eachPart = 0; eachPart < numParticles_; ++eachPart)
+    {
+        theParticles_[eachPart]->propagate();
+    }
 
+}
+
+void Particles::computeBestParticle()
+{
+    for (size_t eachPart = 0; eachPart < numParticles_; ++eachPart)
+    {
+        bestPart_.pose_.x_ += theParticles_[eachPart]->pose_.x_; 
+        bestPart_.pose_.y_ += theParticles_[eachPart]->pose_.y_; 
+        bestPart_.pose_.theta_ += theParticles_[eachPart]->pose_.theta_; 
+    }
+        bestPart_.pose_.x_ /= numParticles_;
+        bestPart_.pose_.y_ /= numParticles_;
+        bestPart_.pose_.theta_ /= numParticles_;
 }

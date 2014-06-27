@@ -174,9 +174,9 @@ void LaserScanner::getIntersection(Point& intersection,
     /// scanOffSegment must be checked first so that intersection isnt inf!
     if (scanBackwards(scanPt.x_, scanPt.y_, scanAngleR, intersection))
     {
-        std::cout << "SCAN BACKWARDS" << std::endl;
-        std::cout << "scannerM: " << scannerM << std::endl;
-        std::cout << "segmentM: " << segmentM << std::endl;
+        //std::cout << "SCAN BACKWARDS" << std::endl;
+        //std::cout << "scannerM: " << scannerM << std::endl;
+        //std::cout << "segmentM: " << segmentM << std::endl;
         intersection.x_ = std::numeric_limits<float>::infinity(); 
         intersection.y_ = std::numeric_limits<float>::infinity(); 
         return;

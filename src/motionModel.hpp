@@ -7,6 +7,8 @@
 #ifndef MOTIONMODEL_HPP 
 #define MOTIONMODEL_HPP
 #include "pose.hpp"
+#include "commonMath.hpp"
+#include <ctgmath>
 
 /**
  * \namespace MotionModel 
@@ -22,9 +24,10 @@ public:
 
     static float rWheelDelta_;
     static float lWheelDelta_;
-    
-    static constexpr float wheelSpacing_ = 0.25;
-    static constexpr float wheelRadius_ = 0.1;
+
+// TODO: add these as parameters in the constructor    
+    static constexpr float wheelSpacing_ = 0.2;
+    static constexpr float wheelRadius_ = 0.075;
 
 private:
 };

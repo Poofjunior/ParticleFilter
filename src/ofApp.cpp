@@ -5,8 +5,8 @@
 void ofApp::setup(){	
 	ofBackground(ofColor::dimGray);	
 	ofSetFrameRate(60);
-// TODO: enable this later
-    robotParticles_ = new Particles(5);
+
+    robotParticles_ = new Particles(20);
     robotParticles_->initParticles(8,8);
 
     // Setup mapSegs_ path parameters
@@ -17,17 +17,27 @@ void ofApp::setup(){
     theMap_ = new Map();
     theMap_->addFeature("roomOutline.txt");
     theMap_->addFeature("box.txt");
-    
-// TODO: disable this later and remove testPart_ data member
-    // for testing:
-    //testPart_ = new Particle{1.5, 3.99, -(M_PI/2.)};
-    //testPart_ = new Particle{2.01, 2, -(M_PI/2.)};
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
 
-    //testPart_->laser_.takeScan(testPart_->pose_, *theMap_);
+
+    //getRealOdometryData()  /// OR fake it right here.
+    /// FOR TESTING: make some fake wheel movement data.
+    MotionModel::rWheelDelta_ = 0.01;
+    MotionModel::lWheelDelta_ = 0.0125;
+
+    robotParticles_->propagateParticles();
+    //robotParticles_->takeScan();
+    //robotParticles_->scoreParticles();
+    //robotParticles_->sampleAndReplace();
+    robotParticles_->computeBestParticle();
+
+    /// For illustration only
+    robotParticles_->bestPart_.laser_.takeScan(
+                            robotParticles_->bestPart_.pose_, 
+                            *theMap_);
 }
 
 
@@ -41,8 +51,11 @@ void ofApp::draw(){
                      robotParticles_->theParticles_[eachPart]->pose_.theta_);
     }
 
-
-    //drawLaser(*testPart_);
+   /// FOR TESTING: draw the laser. 
+    drawLaser(robotParticles_->bestPart_);
+    drawParticle(robotParticles_->bestPart_.pose_.x_, 
+                 robotParticles_->bestPart_.pose_.y_,
+                 robotParticles_->bestPart_.pose_.theta_);
     drawMap();
 
 }
