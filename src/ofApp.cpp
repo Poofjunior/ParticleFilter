@@ -7,16 +7,11 @@ void ofApp::setup(){
 	ofSetFrameRate(60);
 
 // Create the Particles:
-    robotParticles_ = new Particles(200);
+    robotParticles_ = new Particles(500);
     robotParticles_->initParticles(8,8);
-/// FIXME: for testing: override default particle location.
-    robotParticles_->theParticles_[0]->pose_.x_ = 2.50;
-    robotParticles_->theParticles_[0]->pose_.y_ = 2.50;
-    robotParticles_->theParticles_[0]->pose_.theta_ = 0;
-///endof FIXME
 
 // Create a simulated robot at (2.5, 2.5, 0);
-    simBot_ = new Particle(2.5, 2.5, 0, 0);
+    simBot_ = new Particle(3,3.5, 0, 0);
 
 // Setup mapSegs_ path parameters
     mapSegs_.setFilled(false);
@@ -50,7 +45,7 @@ void ofApp::update(){
     robotParticles_->scoreParticles(simBot_->laser_);
 
 
-    //robotParticles_->sampleAndReplace();
+    robotParticles_->sampleAndReplace();
     robotParticles_->computeBestParticle();
 }
 

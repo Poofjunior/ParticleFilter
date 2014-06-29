@@ -17,9 +17,9 @@ Particles::Particles(size_t numParticles)
 Particles::~Particles()
 {
     // Free our dynamically allocated memory.
-    for (size_t eachPart = 0; eachPart< numParticles_; ++eachPart)
+    for (size_t eachPart = 0; eachPart < numParticles_; ++eachPart)
         delete theParticles_[eachPart];
-    delete [] theParticles_;    // FIXME: is this a double-delete?
+    delete[] theParticles_;
 }
 
 void Particles::initParticles(float xmax, float ymax)
@@ -95,9 +95,11 @@ void Particles::scoreParticles(LaserScanner& laser)
 
         totalWeight_ += theParticles_[eachPart]->weight_;
 
+/*
         std::cout << "weight: " << theParticles_[eachPart]->weight_ 
                   << std::endl;
         std::cout << std::endl;
+*/
     }
 
 }
@@ -106,13 +108,15 @@ void Particles::sampleAndReplace()
 {
     // Create new set of particles:
     Particle** newParticles = new Particle*[numParticles_];
+    for (size_t eachPart = 0; eachPart < numParticles_; ++eachPart)
+        newParticles[eachPart] = new Particle{0,0,0};
     // Create an array to determine probability of picking a particle.
     float resampleProb[numParticles_];
     float currProb = 0;
     // Generate resample probabilities.
-    for (size_t eachPart = 0; eachPart< numParticles_; ++eachPart)
+    for (size_t eachPart = 0; eachPart < numParticles_; ++eachPart)
     {
-        currProb += theParticles_[eachPart]->weight_ / totalWeight_; 
+        currProb += (theParticles_[eachPart]->weight_ / totalWeight_); 
         resampleProb[eachPart] = currProb;
     }
     resampleProb[numParticles_ - 1] = 1.0;  /// Account for rounding error.
@@ -124,7 +128,8 @@ void Particles::sampleAndReplace()
     float randomVal;
     size_t pIter;
 
-    for (size_t eachPart = 0; eachPart< numParticles_; ++eachPart)
+
+    for (size_t eachPart = 0; eachPart < numParticles_; ++eachPart)
     {
         randomVal = distribution(generator);
         pIter = 0;
@@ -134,7 +139,12 @@ void Particles::sampleAndReplace()
             if (randomVal < resampleProb[pIter])
             {
                 // Add new particle based on probability.
-                newParticles[eachPart] = theParticles_[pIter];
+                newParticles[eachPart]->pose_.x_ = 
+                                        theParticles_[pIter]->pose_.x_;
+                newParticles[eachPart]->pose_.y_ = 
+                                        theParticles_[pIter]->pose_.x_;
+                newParticles[eachPart]->pose_.theta_ = 
+                                        theParticles_[pIter]->pose_.x_;
                 break;
             }
             else
@@ -142,10 +152,11 @@ void Particles::sampleAndReplace()
         }
     } 
 
+
     // Delete old Particles:
-    for (size_t eachPart = 0; eachPart< numParticles_; ++eachPart)
+    for (size_t eachPart = 0; eachPart < numParticles_; ++eachPart)
         delete theParticles_[eachPart];
-    delete [] theParticles_;    // FIXME: is this a double-delete?
+    delete[] theParticles_;    
 
     // Replace with new particles.
     theParticles_ = newParticles; 
