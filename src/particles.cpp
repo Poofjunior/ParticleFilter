@@ -78,10 +78,25 @@ void Particles::scoreParticles(LaserScanner& laser)
                    theParticles_[eachPart]->laser_.scan_[beamIter],
                    laser.scan_[beamIter], sigma_); 
         }
+/*
         std::cout << "weight: " << theParticles_[eachPart]->weight_ 
                   << std::endl;
         std::cout << std::endl;
+*/
     }
+
+}
+
+void Particles::sampleAndReplace()
+{
+    float totalWeight = 0;
+
+    // Sum all particles weights
+    for(size_t eachPart = 0; eachPart < numParticles_; ++eachPart)
+    {
+        totalWeight += theParticles_[eachPart]->weight_; 
+    }
+    // Sample and replace based on weight
 
 }
 

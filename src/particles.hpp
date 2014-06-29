@@ -59,6 +59,13 @@ public:
  *          independently.
  */
     void scoreParticles(LaserScanner& laser);
+/**
+ * \fn void sampleandReplace()
+ * \brief samples particles and replaces the bad ones with better ones.
+ * \details TODO: make this function's documentation more descriptive.
+ */
+    void sampleAndReplace();
+    
 
 /**
  * \fn void computeBestParticle()
@@ -67,7 +74,7 @@ public:
     void computeBestParticle();
 
 private:
-    static constexpr float sigma_ = 0.5;    /// std deviation for weighing 
+    static constexpr float sigma_ = 5.0;    /// std deviation for weighing 
                                             /// particle via laser scan data. 
                                             /// aka: P(z | x[i]) for all 
                                             /// particles.

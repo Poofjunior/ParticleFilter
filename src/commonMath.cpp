@@ -73,6 +73,14 @@ bool CommonMath::almostEqual(float x, float y, int ulp)
 
 float CommonMath::pdf(float x, float mu, float sigma)
 {
-    /// note: weird constant is sqrt(2*pi) precomputed
+
+    /// Apparently: inf - inf = -nan. Fix that here
+    if ( ((x == std::numeric_limits<float>::infinity()) &&
+          (mu == std::numeric_limits<float>::infinity())) ||  
+         ((x == -std::numeric_limits<float>::infinity()) &&
+          (mu == -std::numeric_limits<float>::infinity())) )
+    return 1.0;
+
+/// note: weird constant is sqrt(2*pi) precomputed
     return 1/(2.5066282746310002) * exp(- (pow((x - mu), 2))/(2*sigma*sigma) );
 }

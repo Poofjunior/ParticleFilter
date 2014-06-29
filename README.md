@@ -1,6 +1,7 @@
 ParticleFilter
 ==============
-a 2d particle filter implemented with OpenFrameworks, and a work in progress:
+a bare-bones 2d particle filter implemented with OpenFrameworks, and a work 
+in progress:
 
 ![laserScanner](https://raw.githubusercontent.com/Poofjunior/ParticleFilter/master/pics/particleFilter1.png)
 
