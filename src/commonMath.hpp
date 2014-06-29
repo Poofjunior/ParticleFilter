@@ -44,6 +44,14 @@ bool almostEqual( float val1, float val2, int ulp);
  * \brief converts input float (in radians) to the correct range of -Pi to Pi.
  */
 float tuneAngle(float angle);
+
+/**
+ * \fn float pdf(float x, float mu, float sigma)
+ * \brief return the probability of getting x from a Gaussian distribution
+ *        centered at mu with std deviation sigma.
+ */
+float pdf(float x, float mu, float sigma);
+
 };
 
 #endif // COMMONMATH_HPP

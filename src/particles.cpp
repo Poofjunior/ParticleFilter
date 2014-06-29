@@ -59,6 +59,32 @@ void Particles::propagateParticles()
 
 }
 
+void Particles::scoreParticles(LaserScanner& laser)
+{
+    /// Assume the same number of laser beam points for all particles:
+    int numLaserPts = theParticles_[0]->laser_.numPoints_;
+
+
+    /// Compute each particle's compound probability of numLaserPts
+    // independent  laser beam events.
+    for(size_t eachPart = 0; eachPart < numParticles_; ++eachPart)
+    {
+        theParticles_[eachPart]->weight_ = 1.0; 
+        /// Compute probability density function for each beam
+        for (size_t beamIter = 0; beamIter < numLaserPts; ++beamIter)
+        {
+        theParticles_[eachPart]->weight_ *=  
+            CommonMath::pdf(
+                   theParticles_[eachPart]->laser_.scan_[beamIter],
+                   laser.scan_[beamIter], sigma_); 
+        }
+        std::cout << "weight: " << theParticles_[eachPart]->weight_ 
+                  << std::endl;
+        std::cout << std::endl;
+    }
+
+}
+
 void Particles::computeBestParticle()
 {
     for (size_t eachPart = 0; eachPart < numParticles_; ++eachPart)

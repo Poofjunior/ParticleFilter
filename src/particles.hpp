@@ -14,6 +14,7 @@
 #include "map.hpp"
 #include "particle.hpp"
 #include "motionModel.hpp"
+#include "laserScanner.hpp"
 
 class Particles {
 public:
@@ -46,12 +47,30 @@ public:
  *          of each particle.
  */
     void propagateParticles();
+/**
+ * \fn void scoreParticles()
+ * \brief iterate through all particles and assign weight according to 
+ *        how well the particle laser data fits the actual robot laser data.
+ * \details The weight of each particle is the compound probability of each
+ *          laser beam's probability. Each laser beam's probability is 
+ *          computed with a (Gaussian) probability density function where
+ *          x is the particle's beam value, mu is the robot's measured beam
+ *          value, and sigma is a tuneable parameter that should be determined
+ *          independently.
+ */
+    void scoreParticles(LaserScanner& laser);
 
 /**
  * \fn void computeBestParticle()
  * \brief computes the average pose of all particles
  */
     void computeBestParticle();
+
+private:
+    static constexpr float sigma_ = 0.5;    /// std deviation for weighing 
+                                            /// particle via laser scan data. 
+                                            /// aka: P(z | x[i]) for all 
+                                            /// particles.
 };
 #endif // PARTICLES_HPP
 

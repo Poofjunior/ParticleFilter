@@ -70,3 +70,9 @@ bool CommonMath::almostEqual(float x, float y, int ulp)
     return std::abs(x - y) <=                                                   
         std::numeric_limits<float>::epsilon() * std::abs(x + y) * ulp;
 }
+
+float CommonMath::pdf(float x, float mu, float sigma)
+{
+    /// note: weird constant is sqrt(2*pi) precomputed
+    return 1/(2.5066282746310002) * exp(- (pow((x - mu), 2))/(2*sigma*sigma) );
+}

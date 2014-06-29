@@ -20,6 +20,7 @@ class ofApp : public ofBaseApp{
         static const int windowY_ = 600;
                       
         Particles* robotParticles_;
+        Particle* simBot_;  /// a simulated robot that can stand in
         Map* theMap_;
         ofPath mapSegs_;
     

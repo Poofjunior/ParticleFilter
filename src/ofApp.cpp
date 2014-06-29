@@ -4,17 +4,20 @@
 //--------------------------------------------------------------
 void ofApp::setup(){	
 	ofBackground(ofColor::dimGray);	
-	//ofSetFrameRate(60);
 	ofSetFrameRate(60);
 
+// Create the Particles:
     robotParticles_ = new Particles(200);
     robotParticles_->initParticles(8,8);
 
-    // Setup mapSegs_ path parameters
+// Create a simulated robot at (2.5, 2.5, 0);
+    simBot_ = new Particle(2.5, 2.5, 0, 0);
+
+// Setup mapSegs_ path parameters
     mapSegs_.setFilled(false);
     mapSegs_.setStrokeColor(ofColor::lightSlateGrey);
     mapSegs_.setStrokeWidth(2);
-    // Create a map with one feature
+// Create a map with one feature
     theMap_ = new Map();
     theMap_->addFeature("roomOutline.txt");
     theMap_->addFeature("box.txt");
@@ -27,20 +30,23 @@ void ofApp::update(){
     //getRealOdometryData()  /// OR fake it right here.
     /// FOR TESTING: make some fake wheel rotation data.
     MotionModel::rWheelDelta_ = 0.5; // in radians!
-    MotionModel::lWheelDelta_ = 0.55;
+    MotionModel::lWheelDelta_ = 0.7;
 
+    // Propagate particles and the simulated robot:
     robotParticles_->propagateParticles();
-    //robotParticles_->takeScan();
-    //robotParticles_->scoreParticles();
+    simBot_->propagate();
+
+    robotParticles_->takeScan(*theMap_);
+    simBot_->laser_.takeScan(simBot_->pose_,
+                             *theMap_);
+
+    // Score particles against the simulated robot's laser.
+    /// TODO: uncomment this.
+    robotParticles_->scoreParticles(simBot_->laser_);
+
+
     //robotParticles_->sampleAndReplace();
     robotParticles_->computeBestParticle();
-
-    /// For illustration only
-    /*
-    robotParticles_->bestPart_.laser_.takeScan(
-                            robotParticles_->bestPart_.pose_, 
-                            *theMap_);
-*/
 }
 
 
@@ -55,10 +61,10 @@ void ofApp::draw(){
     }
 
    /// FOR TESTING: draw the laser. 
-    //drawLaser(robotParticles_->bestPart_);
-    drawParticle(robotParticles_->bestPart_.pose_.x_, 
-                 robotParticles_->bestPart_.pose_.y_,
-                 robotParticles_->bestPart_.pose_.theta_);
+    drawLaser(*simBot_);
+    drawParticle(simBot_->pose_.x_, 
+                 simBot_->pose_.y_,
+                 simBot_->pose_.theta_);
     drawMap();
 
 }
@@ -118,6 +124,7 @@ void ofApp::drawMap()
 //--------------------------------------------------------------
 void ofApp::drawParticle( float x, float y, float theta)
 {
+//TODO: rewrite for speed and efficiency!
     ofPath myTri = ofPath();
     myTri.setFillColor(ofColor::cornsilk);
     
@@ -128,6 +135,10 @@ void ofApp::drawParticle( float x, float y, float theta)
     // Scale triangle appropriately.
     myTri.translate(ofPoint((x * pixelsPerMeter_), (y * pixelsPerMeter_), 0));
     myTri.draw();
+
+/// Try something like this later for increased speed
+    //ofGLRenderer::drawCircle(x,y,0,10);
+    //ofCircle(pixelsPerMeter_*x,pixelsPerMeter_ * y,0,10);
 }
 
 

@@ -2,7 +2,7 @@ ParticleFilter
 ==============
 a 2d particle filter implemented with OpenFrameworks, and a work in progress:
 
-![laserScanner](https://raw.githubusercontent.com/Poofjunior/ParticleFilter/master/pics/particleFilter.png)
+![laserScanner](https://raw.githubusercontent.com/Poofjunior/ParticleFilter/master/pics/particleFilter1.png)
 
 ### Current Status
 * Maps are represented as features, where a feature is a connected set of
@@ -13,3 +13,4 @@ a 2d particle filter implemented with OpenFrameworks, and a work in progress:
 
 ### TODO
 * fininsh implementing the algorithm
+* sample with replacement step must still be written
