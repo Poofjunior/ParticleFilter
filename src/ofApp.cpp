@@ -27,7 +27,7 @@ void ofApp::setup(){
 
 // Create a map with one feature.
     theMap_ = new Map();
-    theMap_->addFeature("roomOutline.txt");
+    theMap_->addFeature("roomOutlineComplicated.txt");
 /// Add more features if files exist.
     //theMap_->addFeature("box.txt");   
 }
