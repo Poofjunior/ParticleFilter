@@ -9,6 +9,8 @@
 #include "pose.hpp"
 #include "commonMath.hpp"
 #include <ctgmath>
+#include <random>
+#include <iostream>
 
 /**
  * \namespace MotionModel 
@@ -20,10 +22,14 @@ class MotionModel {
 public:
     MotionModel();
     ~MotionModel();
-    static void updatePose(Pose& oldPose);
+    static void updatePose(Pose& oldPose, bool noise = false);
 
     static float rWheelDelta_;
     static float lWheelDelta_;
+    
+    /// For adding noise.
+    std::normal_distribution<float> distribution_;
+    std::default_random_engine generator_;
 
 // TODO: add these as parameters in the constructor    
     static constexpr float wheelSpacing_ = 0.2;

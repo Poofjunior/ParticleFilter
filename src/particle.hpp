@@ -18,7 +18,7 @@ public:
  * \fn void propagate();
  * \brief update particle pose according to robot-specific motion model.
  */    
-        void propagate();
+        void propagate(bool noise = false);
     
         Pose pose_;
         LaserScanner laser_;

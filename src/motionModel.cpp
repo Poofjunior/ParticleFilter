@@ -22,11 +22,32 @@ MotionModel::~MotionModel()
     // nothing to do!
 }
 
-void MotionModel::updatePose(Pose& thePose)
+void MotionModel::updatePose(Pose& thePose, bool noise)
 {
-    // Do some math here based on rWheelDelta_ and lWheelDelta_.
-    float dSR = rWheelDelta_ * wheelRadius_;
-    float dSL = lWheelDelta_ * wheelRadius_;
+    float dSR;
+    float dSL;
+    if (noise)
+    {
+        /// Note: these must be static or repeated calls will have the
+        ///       same randomness!
+        static std::default_random_engine generator_((unsigned int) time(0));
+        static std::normal_distribution<float>distribution_(0,.1);
+
+        float wheelNoise = distribution_(generator_);
+        //std::cout << "wheelNoise: " << wheelNoise << std::endl; 
+
+        // Do some math here based on rWheelDelta_ and lWheelDelta_.
+        dSR = rWheelDelta_ * wheelRadius_ + 
+                    rWheelDelta_* wheelNoise;
+        dSL = lWheelDelta_ * wheelRadius_ + 
+                    lWheelDelta_ * wheelNoise;
+    }
+    else
+    {
+        dSR = rWheelDelta_ * wheelRadius_; 
+        dSL = lWheelDelta_ * wheelRadius_; 
+    }
+
     float dS = (dSR + dSL)/2.0;
 
     float dT = (dSR - dSL)/wheelSpacing_;

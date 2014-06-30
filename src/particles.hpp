@@ -75,7 +75,7 @@ public:
 
 private:
     float totalWeight_; /// sum of all particle weights
-    static constexpr float sigma_ = 5.0;    /// std deviation for weighing 
+    static constexpr float sigma_ = 1;    /// std deviation for weighing 
                                             /// particle via laser scan data. 
                                             /// aka: P(z | x[i]) for all 
                                             /// particles.

@@ -86,5 +86,5 @@ float CommonMath::pdf(float x, float mu, float sigma)
     return (1/(sigma * (2.5066282746310002))) * 
             exp(- (pow((x - mu), 2))/(2*sigma*sigma) );
 */
-    return  exp(- (pow((x - mu), 2))/(2*sigma*sigma) );
+    return  exp(- (pow((x - mu), 2)) / (2*sigma*sigma) );
 }

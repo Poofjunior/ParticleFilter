@@ -54,7 +54,8 @@ void Particles::propagateParticles()
 {
     for(size_t eachPart = 0; eachPart < numParticles_; ++eachPart)
     {
-        theParticles_[eachPart]->propagate();
+        // Propagate with noise.
+        theParticles_[eachPart]->propagate(true);
     }
 
 }
@@ -79,6 +80,7 @@ void Particles::scoreParticles(LaserScanner& laser)
             CommonMath::pdf(
                    theParticles_[eachPart]->laser_.scan_[beamIter],
                    laser.scan_[beamIter], sigma_); 
+
 /*
         std::cout << "particle: " 
                   << theParticles_[eachPart]->laser_.scan_[beamIter] 
@@ -89,7 +91,9 @@ void Particles::scoreParticles(LaserScanner& laser)
         std::cout << "pdfVal: " 
                   << pdfVal 
                   << std::endl;
+        std::cout << std::endl;
 */
+
         theParticles_[eachPart]->weight_ *= pdfVal;  
         }
 
@@ -98,9 +102,14 @@ void Particles::scoreParticles(LaserScanner& laser)
 /*
         std::cout << "weight: " << theParticles_[eachPart]->weight_ 
                   << std::endl;
-        std::cout << std::endl;
 */
+
     }
+/*
+    std::cout << "totalWeight: " << totalWeight_ << std::endl;
+    std::cout << std::endl;
+*/
+    //std::cout << std::endl;
 
 }
 
@@ -114,6 +123,7 @@ void Particles::sampleAndReplace()
     float resampleProb[numParticles_];
     float currProb = 0;
     // Generate resample probabilities.
+
     for (size_t eachPart = 0; eachPart < numParticles_; ++eachPart)
     {
         currProb += (theParticles_[eachPart]->weight_ / totalWeight_); 
@@ -123,8 +133,9 @@ void Particles::sampleAndReplace()
 
 
     // Generate a means to randomly choose particles based on weight.
-    std::default_random_engine generator((unsigned int)time(0));
-    std::uniform_real_distribution<float> distribution(0,1);
+    ///Note: these must be static or the same random values will pop out.
+    static std::default_random_engine generator((unsigned int)time(0));
+    static std::uniform_real_distribution<float> distribution(0,1);
     float randomVal;
     size_t pIter;
 
@@ -132,6 +143,7 @@ void Particles::sampleAndReplace()
     for (size_t eachPart = 0; eachPart < numParticles_; ++eachPart)
     {
         randomVal = distribution(generator);
+        //std::cout << "randomVal: " << randomVal << std::endl;
         pIter = 0;
 
         while (pIter < numParticles_)
@@ -142,16 +154,15 @@ void Particles::sampleAndReplace()
                 newParticles[eachPart]->pose_.x_ = 
                                         theParticles_[pIter]->pose_.x_;
                 newParticles[eachPart]->pose_.y_ = 
-                                        theParticles_[pIter]->pose_.x_;
+                                        theParticles_[pIter]->pose_.y_;
                 newParticles[eachPart]->pose_.theta_ = 
-                                        theParticles_[pIter]->pose_.x_;
+                                        theParticles_[pIter]->pose_.theta_;
                 break;
             }
             else
                 ++pIter;
         }
     } 
-
 
     // Delete old Particles:
     for (size_t eachPart = 0; eachPart < numParticles_; ++eachPart)

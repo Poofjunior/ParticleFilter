@@ -9,6 +9,9 @@ void ofApp::setup(){
 // Create the Particles:
     robotParticles_ = new Particles(500);
     robotParticles_->initParticles(8,8);
+    robotParticles_->theParticles_[0]->pose_.x_ = 3;
+    robotParticles_->theParticles_[0]->pose_.y_ = 3.55;
+    robotParticles_->theParticles_[0]->pose_.theta_ = 0;
 
 // Create a simulated robot at (2.5, 2.5, 0);
     simBot_ = new Particle(3,3.5, 0, 0);
@@ -20,7 +23,7 @@ void ofApp::setup(){
 // Create a map with one feature
     theMap_ = new Map();
     theMap_->addFeature("roomOutline.txt");
-    theMap_->addFeature("box.txt");
+    //theMap_->addFeature("box.txt");
 }
 
 //--------------------------------------------------------------
@@ -29,8 +32,8 @@ void ofApp::update(){
 
     //getRealOdometryData()  /// OR fake it right here.
     /// FOR TESTING: make some fake wheel rotation data.
-    MotionModel::rWheelDelta_ = 0.5; // in radians!
-    MotionModel::lWheelDelta_ = 0.7;
+    MotionModel::rWheelDelta_ = 0.1; // in radians!
+    MotionModel::lWheelDelta_ = 0.11;
 
     // Propagate particles and the simulated robot:
     robotParticles_->propagateParticles();
@@ -45,8 +48,8 @@ void ofApp::update(){
     robotParticles_->scoreParticles(simBot_->laser_);
 
 
-    robotParticles_->sampleAndReplace();
-    robotParticles_->computeBestParticle();
+    //robotParticles_->sampleAndReplace();
+    //robotParticles_->computeBestParticle();
 }
 
 
@@ -67,6 +70,7 @@ void ofApp::draw(){
                  simBot_->pose_.theta_);
     drawMap();
 
+    robotParticles_->sampleAndReplace();
 }
 
 //--------------------------------------------------------------

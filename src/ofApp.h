@@ -17,7 +17,7 @@ class ofApp : public ofBaseApp{
 
     public:
         static const int windowX_ = 800;
-        static const int windowY_ = 600;
+        static const int windowY_ = 800;
                       
         Particles* robotParticles_;
         Particle* simBot_;  /// a simulated robot that can stand in

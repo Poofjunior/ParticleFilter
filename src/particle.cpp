@@ -19,9 +19,10 @@ Particle::~Particle()
 }
 
 
-void Particle::propagate()
+void Particle::propagate(bool noise)
 {
-    MotionModel::updatePose(pose_);    
+    // Update particle with noise.
+    MotionModel::updatePose(pose_, noise);    
 }
 
 
