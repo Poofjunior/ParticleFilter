@@ -6,24 +6,29 @@ void ofApp::setup(){
 	ofBackground(ofColor::dimGray);	
 	ofSetFrameRate(60);
 
-// Create the Particles:
-    robotParticles_ = new Particles(500);
+// Create the Particles.
+    robotParticles_ = new Particles(5000);
     robotParticles_->initParticles(8,8);
+/// OPTIONAL: Add known start location to first particle.
+/*
     robotParticles_->theParticles_[0]->pose_.x_ = 3;
-    robotParticles_->theParticles_[0]->pose_.y_ = 3.55;
+    robotParticles_->theParticles_[0]->pose_.y_ = 3.5;
     robotParticles_->theParticles_[0]->pose_.theta_ = 0;
+*/
 
-// Create a simulated robot at (2.5, 2.5, 0);
+// FOR TESTING: Create a simulated robot at some pose with weight 0.
     simBot_ = new Particle(3,3.5, 0, 0);
 
-// Setup mapSegs_ path parameters
+// Setup mapSegs_ path parameters.
     mapSegs_.setFilled(false);
     mapSegs_.setStrokeColor(ofColor::lightSlateGrey);
     mapSegs_.setStrokeWidth(2);
-// Create a map with one feature
+
+// Create a map with one feature.
     theMap_ = new Map();
     theMap_->addFeature("roomOutline.txt");
-    //theMap_->addFeature("box.txt");
+/// Add more features if files exist.
+    //theMap_->addFeature("box.txt");   
 }
 
 //--------------------------------------------------------------
@@ -31,7 +36,7 @@ void ofApp::update(){
 
 
     //getRealOdometryData()  /// OR fake it right here.
-    /// FOR TESTING: make some fake wheel rotation data.
+    /// FOR TESTING: Make some fake wheel rotation data.
     MotionModel::rWheelDelta_ = 0.1; // in radians!
     MotionModel::lWheelDelta_ = 0.11;
 
@@ -44,11 +49,12 @@ void ofApp::update(){
                              *theMap_);
 
     // Score particles against the simulated robot's laser.
-    /// TODO: uncomment this.
     robotParticles_->scoreParticles(simBot_->laser_);
 
 
-    //robotParticles_->sampleAndReplace();
+    /// This is done in the draw() function so the first iteration appears
+    /// in the window.
+    //robotParticles_->sampleAndReplace();  
     //robotParticles_->computeBestParticle();
 }
 
@@ -63,34 +69,25 @@ void ofApp::draw(){
                      robotParticles_->theParticles_[eachPart]->pose_.theta_);
     }
 
-   /// FOR TESTING: draw the laser. 
+   /// OPTIONAL: draw the simulated robot's laser. 
     drawLaser(*simBot_);
     drawParticle(simBot_->pose_.x_, 
                  simBot_->pose_.y_,
                  simBot_->pose_.theta_);
+
     drawMap();
 
+    /// This function has been moved here such that the first iteration 
+    /// is visible in the window.
     robotParticles_->sampleAndReplace();
 }
-
-//--------------------------------------------------------------
-void ofApp::mouseDragged(int x, int y, int button)
-{}
-
-//--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button)
-{}
-
-//--------------------------------------------------------------
-void ofApp::mouseReleased(int x, int y, int button)
-{}
 
 
 //--------------------------------------------------------------
 void ofApp::drawMap()
 {
-    // iterate through list of features
-    // draw each set of points with correct scaling.
+    // Iterate through list of features.
+    // Draw each set of points with correct scaling.
     for (auto featureIter = theMap_->features_.begin(); 
               featureIter != theMap_->features_.end();
               ++featureIter)
@@ -139,10 +136,6 @@ void ofApp::drawParticle( float x, float y, float theta)
     // Scale triangle appropriately.
     myTri.translate(ofPoint((x * pixelsPerMeter_), (y * pixelsPerMeter_), 0));
     myTri.draw();
-
-/// Try something like this later for increased speed
-    //ofGLRenderer::drawCircle(x,y,0,10);
-    //ofCircle(pixelsPerMeter_*x,pixelsPerMeter_ * y,0,10);
 }
 
 
@@ -169,4 +162,17 @@ void ofApp::drawLaser(Particle& theParticle)
     }
     laser.draw();
 }
+
+
+//--------------------------------------------------------------
+void ofApp::mouseDragged(int x, int y, int button)
+{}
+
+//--------------------------------------------------------------
+void ofApp::mousePressed(int x, int y, int button)
+{}
+
+//--------------------------------------------------------------
+void ofApp::mouseReleased(int x, int y, int button)
+{}
 

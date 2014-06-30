@@ -5,6 +5,8 @@ a bare-bones 2d particle filter implemented with OpenFrameworks
 ![laserScanner](https://raw.githubusercontent.com/Poofjunior/ParticleFilter/master/pics/particleFilter1.png)
 
 ### Current Status
+* Works for a known starting location or when a particle lands nearby. (Needs
+  some tuning to add in more noise.)
 * Maps are represented as features, where a feature is a connected set of
   segments. A Map is a collection of features, generated from .txt files. 
 * A Map of an environment can be drawn out with one or more features.
