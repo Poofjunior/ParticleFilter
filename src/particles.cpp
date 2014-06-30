@@ -98,12 +98,10 @@ void Particles::scoreParticles(LaserScanner& laser)
         }
 
         totalWeight_ += theParticles_[eachPart]->weight_;
-
 /*
         std::cout << "weight: " << theParticles_[eachPart]->weight_ 
                   << std::endl;
 */
-
     }
 /*
     std::cout << "totalWeight: " << totalWeight_ << std::endl;
@@ -140,7 +138,7 @@ void Particles::sampleAndReplace()
     size_t pIter;
 
 
-    for (size_t eachPart = 0; eachPart < numParticles_; ++eachPart)
+    for (size_t eachPart = 0; eachPart < (0.98 * numParticles_); ++eachPart)
     {
         randomVal = distribution(generator);
         //std::cout << "randomVal: " << randomVal << std::endl;
@@ -163,6 +161,19 @@ void Particles::sampleAndReplace()
                 ++pIter;
         }
     } 
+    /// Randomly generate additional particles
+    for (size_t eachRandPart = size_t(0.98 * numParticles_); 
+         eachRandPart < numParticles_; ++eachRandPart)
+    {
+        static std::default_random_engine generator((unsigned int)time(0));
+        static std::uniform_real_distribution<float> distributionX(0,8);
+        static std::uniform_real_distribution<float> distributionY(0,8);
+        static std::uniform_real_distribution<float> distributionT(-M_PI,M_PI);
+
+        newParticles[eachRandPart]->pose_.x_ = distributionX(generator);
+        newParticles[eachRandPart]->pose_.y_ = distributionX(generator);
+        newParticles[eachRandPart]->pose_.theta_ = distributionT(generator);
+    }
 
     // Delete old Particles:
     for (size_t eachPart = 0; eachPart < numParticles_; ++eachPart)

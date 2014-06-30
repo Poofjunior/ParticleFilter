@@ -33,14 +33,15 @@ void MotionModel::updatePose(Pose& thePose, bool noise)
         static std::default_random_engine generator_((unsigned int) time(0));
         static std::normal_distribution<float>distribution_(0,.1);
 
-        float wheelNoise = distribution_(generator_);
+        float wheelNoiseL = distribution_(generator_);
+        float wheelNoiseR = distribution_(generator_);
         //std::cout << "wheelNoise: " << wheelNoise << std::endl; 
 
         // Do some math here based on rWheelDelta_ and lWheelDelta_.
         dSR = rWheelDelta_ * wheelRadius_ + 
-                    rWheelDelta_* wheelNoise;
+                    rWheelDelta_* wheelNoiseR;
         dSL = lWheelDelta_ * wheelRadius_ + 
-                    lWheelDelta_ * wheelNoise;
+                    lWheelDelta_ * wheelNoiseL;
     }
     else
     {

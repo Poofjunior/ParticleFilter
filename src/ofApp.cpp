@@ -7,14 +7,15 @@ void ofApp::setup(){
 	ofSetFrameRate(60);
 
 // Create the Particles.
-    robotParticles_ = new Particles(5000);
+    robotParticles_ = new Particles(500);
     robotParticles_->initParticles(8,8);
 /// OPTIONAL: Add known start location to first particle.
 /*
-    robotParticles_->theParticles_[0]->pose_.x_ = 3;
-    robotParticles_->theParticles_[0]->pose_.y_ = 3.5;
+    robotParticles_->theParticles_[0]->pose_.x_ = 3.1;
+    robotParticles_->theParticles_[0]->pose_.y_ = 3.51;
     robotParticles_->theParticles_[0]->pose_.theta_ = 0;
 */
+
 
 // FOR TESTING: Create a simulated robot at some pose with weight 0.
     simBot_ = new Particle(3,3.5, 0, 0);

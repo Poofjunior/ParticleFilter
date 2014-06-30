@@ -29,7 +29,8 @@ public:
  * \details for a single laser dot, choose and angleSpread of 0 and
  * numPoints = 1. Default is 5 numPoints and 2.094395... radians (120 deg).
  */
-    LaserScanner(float angleSpread = 2.0943951023931953, size_t numPoints = 27);
+    //LaserScanner(float angleSpread = 2.0943951023931953, size_t numPoints = 27);
+    LaserScanner(float angleSpread = 2.0943951023931953, size_t numPoints = 61);
     //LaserScanner(float angleSpread = 0, size_t numPoints = 1);
     //LaserScanner(float angleSpread = 2.0943951023931953, size_t numPoints = 7);
     ~LaserScanner();
