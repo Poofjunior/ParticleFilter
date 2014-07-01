@@ -16,8 +16,8 @@
 class ofApp : public ofBaseApp{
 
     public:
-        static const int windowX_ = 800;
-        static const int windowY_ = 800;
+        static const int windowX_ = 1000;
+        static const int windowY_ = 1000;
                       
         Particles* robotParticles_;
         Particle* simBot_;  /// a simulated robot that can stand in
@@ -32,6 +32,7 @@ class ofApp : public ofBaseApp{
         void mouseDragged(int x, int y, int button);
         void mousePressed(int x, int y, int button);
         void mouseReleased(int x, int y, int button);
+        void keyPressed(int key);
     
 /**
  * \fn drawMap()

@@ -4,10 +4,10 @@
 //--------------------------------------------------------------
 void ofApp::setup(){	
 	ofBackground(ofColor::dimGray);	
-	ofSetFrameRate(60);
+	ofSetFrameRate(30);
 
 // Create the Particles.
-    robotParticles_ = new Particles(500);
+    robotParticles_ = new Particles(1000);
     robotParticles_->initParticles(8,8);
 /// OPTIONAL: Add known start location to first particle.
 /*
@@ -18,8 +18,7 @@ void ofApp::setup(){
 
 
 // FOR TESTING: Create a simulated robot at some pose with weight 0.
-    simBot_ = new Particle(3,3.5, 0, 0);
-
+    simBot_ = new Particle(4.1,3.5, 0, 0);
 // Setup mapSegs_ path parameters.
     mapSegs_.setFilled(false);
     mapSegs_.setStrokeColor(ofColor::lightSlateGrey);
@@ -27,7 +26,8 @@ void ofApp::setup(){
 
 // Create a map with one feature.
     theMap_ = new Map();
-    theMap_->addFeature("roomOutlineComplicated.txt");
+    //theMap_->addFeature("roomOutlineComplicated.txt");
+    theMap_->addFeature("bigMap.txt");
 /// Add more features if files exist.
     //theMap_->addFeature("box.txt");   
 }
@@ -36,10 +36,12 @@ void ofApp::setup(){
 void ofApp::update(){
 
 
-    //getRealOdometryData()  /// OR fake it right here.
+    //getRealOdometryData()  /// OR fake it right here, OR use keyPressed().
     /// FOR TESTING: Make some fake wheel rotation data.
+    /*
     MotionModel::rWheelDelta_ = 0.1; // in radians!
     MotionModel::lWheelDelta_ = 0.11;
+    */
 
     // Propagate particles and the simulated robot:
     robotParticles_->propagateParticles();
@@ -55,7 +57,13 @@ void ofApp::update(){
 
     /// This is done in the draw() function so the first iteration appears
     /// in the window.
-    //robotParticles_->sampleAndReplace();  
+    /*
+    // Only sample and replace if the odometry tells us that we've moved.
+    if ((MotionModel::rWheelDelta_ != 0) || (MotionModel::lWheelDelta_ = 0))
+    {
+        robotParticles_->sampleAndReplace();
+    }
+    */
     //robotParticles_->computeBestParticle();
 }
 
@@ -80,7 +88,12 @@ void ofApp::draw(){
 
     /// This function has been moved here such that the first iteration 
     /// is visible in the window.
-    robotParticles_->sampleAndReplace();
+    if ((MotionModel::rWheelDelta_ != 0.0) || 
+        (MotionModel::lWheelDelta_ != 0.0))
+    {
+        robotParticles_->sampleAndReplace();
+    }
+    
 }
 
 
@@ -164,6 +177,36 @@ void ofApp::drawLaser(Particle& theParticle)
     laser.draw();
 }
 
+//--------------------------------------------------------------
+void ofApp::keyPressed(int key)
+{
+    if (key == 'w')
+    {
+        MotionModel::rWheelDelta_ = 0.2; // in radians!
+        MotionModel::lWheelDelta_ = 0.2;
+    }
+    else if (key == 'd')
+    {
+        MotionModel::rWheelDelta_ = 0.1; // in radians!
+        MotionModel::lWheelDelta_ = 0.0;
+    }
+    else if (key == 'a')
+    {
+        MotionModel::rWheelDelta_ = 0.0; // in radians!
+        MotionModel::lWheelDelta_ = 0.1;
+    }
+    else if (key == 's')
+    {
+        MotionModel::rWheelDelta_ = -0.2; // in radians!
+        MotionModel::lWheelDelta_ = -0.2;
+    }
+    else
+    {
+        MotionModel::rWheelDelta_ = 0; // in radians!
+        MotionModel::lWheelDelta_ = 0;
+    }
+    
+}
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button)
