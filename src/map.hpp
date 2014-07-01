@@ -15,6 +15,8 @@ class Map {
 public:
     Map();
     ~Map();
+    Map(const Map& otherMap) = delete;
+    Map& operator=(const Map& otherMap) = delete;
 
 /**
  * \fn addFeature(char *fileName)

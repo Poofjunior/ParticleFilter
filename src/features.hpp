@@ -25,6 +25,9 @@ class Feature {
     public:
     Feature(char* filepath);
     ~Feature();
+    /// Disable copy constructor and assignment operator.
+    Feature(const Feature& otherFeature) = delete;
+    Feature& operator=(const Feature& otherFeature) = delete;
         
     std::list<Point> points_;///< douubly-linked list of the feature's points
     // std::list front() and back() implementations are constant.

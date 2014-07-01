@@ -20,6 +20,8 @@ class Particles {
 public:
     Particles(size_t numParticles);
     ~Particles();
+    Particles(const Particles& otherParticles) = delete;
+    Particles& operator=(const Particles& otherParticles) = delete;
 
     size_t numParticles_;
     Particle** theParticles_;   ///< a list of pointers to particles
