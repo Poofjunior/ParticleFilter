@@ -8,7 +8,7 @@ void ofApp::setup(){
 
 // Create the Particles.
     robotParticles_ = new Particles(1000);
-    robotParticles_->initParticles(8,8);
+    robotParticles_->initParticles(10,10);
 /// OPTIONAL: Add known start location to first particle.
 /*
     robotParticles_->theParticles_[0]->pose_.x_ = 3.1;

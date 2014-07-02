@@ -25,8 +25,7 @@ class Feature {
     public:
     Feature(char* filepath);
     ~Feature();
-    /// Disable copy constructor and assignment operator.
-    Feature(const Feature& otherFeature) = delete;
+    /// Disable assignment operator; copy constructor needed for loading map.
     Feature& operator=(const Feature& otherFeature) = delete;
         
     std::list<Point> points_;///< douubly-linked list of the feature's points
