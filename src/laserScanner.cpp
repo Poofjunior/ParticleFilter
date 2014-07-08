@@ -10,8 +10,16 @@ LaserScanner::LaserScanner(float angleSpread, size_t numPoints)
 :angleSpread_{angleSpread}, numPoints_{numPoints}
 {
     // Create the array for scan distances:
-    scan_ = new float[numPoints];
-    intersections_ = new Point[numPoints];
+    try
+    {
+        scan_ = new float[numPoints];
+        intersections_ = new Point[numPoints];
+    }
+    catch(...)
+    {
+        std::cerr << "Laser scanner could not allocate memory" << std::endl;
+    }
+
     step_ = angleSpread / (numPoints - 1);
 }
 

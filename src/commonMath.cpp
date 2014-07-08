@@ -81,10 +81,11 @@ float CommonMath::pdf(float x, float mu, float sigma)
           (mu == -std::numeric_limits<float>::infinity())) )
     return 1.0;
 
-/// note: weird constant is sqrt(2*pi) precomputed
+    /// note: weird constant is sqrt(2*pi) precomputed
 /*
     return (1/(sigma * (2.5066282746310002))) * 
             exp(- (pow((x - mu), 2))/(2*sigma*sigma) );
 */
+    
     return  exp(- (pow((x - mu), 2)) / (2*sigma*sigma) );
 }
