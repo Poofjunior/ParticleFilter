@@ -30,11 +30,17 @@ void ofApp::setup(){
     theMap_->addFeature("bigMap.txt");
 /// Add more features if files exist.
     //theMap_->addFeature("box.txt");   
+    
+
+
+// new feature: multithreading:
+    startThread(true, false);
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
 
+    runCalc_ = true;
 
     //getRealOdometryData()  /// OR fake it right here, OR use keyPressed().
     /// FOR TESTING: Make some fake wheel rotation data.
@@ -43,6 +49,8 @@ void ofApp::update(){
     MotionModel::lWheelDelta_ = 0.11;
     */
 
+/// Handled in threadedFunction now.
+/*
     // Propagate particles and the simulated robot:
     robotParticles_->propagateParticles();
     simBot_->propagate();
@@ -53,6 +61,7 @@ void ofApp::update(){
 
     // Score particles against the simulated robot's laser.
     robotParticles_->scoreParticles(simBot_->laser_);
+*/
 
 
     /// This is done in the draw() function so the first iteration appears
@@ -86,6 +95,8 @@ void ofApp::draw(){
 
     drawMap();
 
+/// Handled in threadedFunction now.
+/*
     /// This function has been moved here such that the first iteration 
     /// is visible in the window.
     if ((MotionModel::rWheelDelta_ != 0.0) || 
@@ -93,6 +104,7 @@ void ofApp::draw(){
     {
         robotParticles_->sampleAndReplace();
     }
+*/
     
 }
 
@@ -217,6 +229,42 @@ void ofApp::mousePressed(int x, int y, int button)
 {}
 
 //--------------------------------------------------------------
+void ofApp::threadedFunction()
+{
+    while (isThreadRunning())
+{
+    if (runCalc_)
+    {
+        runCalc_ = false;
+        
+        // Propagate particles and the simulated robot:
+        robotParticles_->propagateParticles();
+        simBot_->propagate();
+
+        robotParticles_->takeScan(*theMap_);
+        simBot_->laser_.takeScan(simBot_->pose_,
+                                 *theMap_);
+
+        // Score particles against the simulated robot's laser.
+        robotParticles_->scoreParticles(simBot_->laser_);
+
+        /// This function has been moved here such that the first iteration 
+        /// is visible in the window.
+        if ((MotionModel::rWheelDelta_ != 0.0) || 
+            (MotionModel::lWheelDelta_ != 0.0))
+        {
+            robotParticles_->sampleAndReplace();
+        }
+    }
+}
+}
+
+//--------------------------------------------------------------
+void ofApp::exit()
+{
+    stopThread();
+}
+
+//--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button)
 {}
-

@@ -13,7 +13,7 @@
 #include "laserScanner.hpp"
 #include <iostream> // TODO: remove after debugging
 
-class ofApp : public ofBaseApp{
+class ofApp : public ofBaseApp, public ofThread{
 
     public:
         static const int windowX_ = 1000;
@@ -23,10 +23,13 @@ class ofApp : public ofBaseApp{
         Particle* simBot_;  /// a simulated robot that can stand in
         Map* theMap_;
         ofPath mapSegs_;
+
     
         void setup();
         void update();
         void draw();
+        void threadedFunction();
+        void exit();
     
         
         void mouseDragged(int x, int y, int button);
@@ -55,6 +58,7 @@ class ofApp : public ofBaseApp{
 
     private:
         static constexpr float pixelsPerMeter_ = 100.;
+        bool runCalc_;
 };
 
 
