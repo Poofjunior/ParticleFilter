@@ -200,6 +200,10 @@ void ofApp::keyPressed(int key)
         MotionModel::rWheelDelta_ = -0.2; // in radians!
         MotionModel::lWheelDelta_ = -0.2;
     }
+    else if (key == 'e')
+    {
+        std::exit(2);
+    }
     else
     {
         MotionModel::rWheelDelta_ = 0; // in radians!

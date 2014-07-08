@@ -12,6 +12,7 @@
 #include "motionModel.hpp"
 #include "laserScanner.hpp"
 #include <iostream> // TODO: remove after debugging
+#include <cstdlib>
 
 class ofApp : public ofBaseApp{
 

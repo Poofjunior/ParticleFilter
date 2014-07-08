@@ -1,5 +1,6 @@
 #include "ofMain.h"
 #include "ofApp.h"
+#include <cstdlib>
 
 //========================================================================
 int main( ){
@@ -16,5 +17,6 @@ int main( ){
     delete particleFilter;
 
     // ofApp is deleted on exit.
+    std::exit(2);
 
 }
