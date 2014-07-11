@@ -29,6 +29,9 @@ int main( ){
     // elapsed)
     // Fake some wheel data:
 
+        MotionModel::rWheelDelta_  = 0.05;
+        MotionModel::lWheelDelta_ = 0.05;
+
         robotParticles_->propagateParticles();
         simBot.propagate();
 
@@ -38,7 +41,7 @@ int main( ){
 
         // Score particles against the simulated robot's laser.
              robotParticles_->scoreParticles(simBot.laser_);
-        if((MotionModel::rWheelDelta_ != 0) || (MotionModel::lWheelDelta_ = 0))
+        if((MotionModel::rWheelDelta_ != 0) || (MotionModel::lWheelDelta_ != 0))
         {
             robotParticles_->sampleAndReplace();
         }

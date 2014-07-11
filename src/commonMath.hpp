@@ -8,6 +8,7 @@
 #define COMMONMATH_HPP
 #include <limits>
 #include <ctgmath>
+#include <cassert> // FIXME: remove if not needed for debugging
 namespace CommonMath {
 
 const float largeVal_ = 1000; 

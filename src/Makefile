@@ -7,7 +7,7 @@
 
 # ----- Make Macros -----
 
-OPTFLAGS    =   -Os
+OPTFLAGS    =   -Os -pg
 CXXFLAGS    =   -Wall -Wextra $(OPTFLAGS) -std=c++11#-pedantic 
 CXX         =    g++
 INCLUDES    =    
