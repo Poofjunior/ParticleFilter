@@ -64,8 +64,15 @@ float CommonMath::round(float input)
 bool CommonMath::almostEqual(float x, float y, int ulp)
 {
     // Compare all subnormal values (like infinity) exactly.
+/// OLD METHOD: slow!
+/*
     if (!std::isnormal(x) || !std::isnormal(y))                                 
         return x == y;                                                          
+*/
+
+/// NEW METHOD: avoid calls to isnormal
+    if (x == y)
+            return true;
                                                                                 
     return std::abs(x - y) <=                                                   
         std::numeric_limits<float>::epsilon() * std::abs(x + y) * ulp;
