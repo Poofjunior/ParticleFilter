@@ -24,6 +24,7 @@ class ofApp : public ofBaseApp{
         Particle* simBot_;  /// a simulated robot that can stand in
         Map* theMap_;
         ofPath mapSegs_;
+        ofFbo* fbo_;
     
         void setup();
         void update();

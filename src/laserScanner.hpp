@@ -32,6 +32,8 @@ public:
     //LaserScanner(float angleSpread = 2.0943951023931953, size_t numPoints = 27);
     //LaserScanner(float angleSpread = 2.0943951023931953, size_t numPoints = 61);
     //LaserScanner(float angleSpread = 0, size_t numPoints = 1);
+    //
+    /// 7 points works great!
     LaserScanner(float angleSpread = 2.0943951023931953, size_t numPoints = 7);
     ~LaserScanner();
     /// Disable copy constructor and assignment operator.

@@ -3,8 +3,8 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){	
-	ofBackground(ofColor::dimGray);	
-	ofSetFrameRate(30);
+//	ofBackground(ofColor::dimGray);	
+	ofSetFrameRate(60);
 
 // Create the Particles.
     robotParticles_ = new Particles(1000);
@@ -30,6 +30,15 @@ void ofApp::setup(){
     theMap_->addFeature("bigMap.txt");
 /// Add more features if files exist.
     //theMap_->addFeature("box.txt");   
+    
+/// Drawing the Map is done once in a separate buffer:
+    fbo_ = new ofFbo();
+    fbo_->allocate(windowX_, windowY_);
+    fbo_->begin();
+    ofClear(255, 255, 255, 0);
+	ofBackground(ofColor::dimGray);	
+    drawMap();
+    fbo_->end();
 }
 
 //--------------------------------------------------------------
@@ -69,6 +78,7 @@ void ofApp::update(){
 
 
 void ofApp::draw(){
+    fbo_->draw(0,0);
 
 	for (size_t eachPart = 0; eachPart < robotParticles_->numParticles_; 
         ++eachPart)
@@ -78,13 +88,11 @@ void ofApp::draw(){
                      robotParticles_->theParticles_[eachPart]->pose_.theta_);
     }
 
-   /// OPTIONAL: draw the simulated robot's laser. 
+   /// OPTIONAL: draw the simulated robot and its laser. 
     drawLaser(*simBot_);
     drawParticle(simBot_->pose_.x_, 
                  simBot_->pose_.y_,
                  simBot_->pose_.theta_);
-
-    drawMap();
 
     /// This function has been moved here such that the first iteration 
     /// is visible in the window.
@@ -202,6 +210,10 @@ void ofApp::keyPressed(int key)
     }
     else if (key == 'e')
     {
+        delete fbo_;
+        delete robotParticles_;
+        delete simBot_;
+        delete theMap_;
         std::exit(2);
     }
     else

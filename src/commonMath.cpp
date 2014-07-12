@@ -65,15 +65,16 @@ bool CommonMath::almostEqual(float x, float y, int ulp)
 {
     // Compare all subnormal values (like infinity) exactly.
 /// OLD METHOD: slow!
-/*
+    assert((isnan(x) == false) && (isnan(x) == false));
+
     if (!std::isnormal(x) || !std::isnormal(y))                                 
         return x == y;                                                          
-*/
 
 /// NEW METHOD: avoid calls to isnormal
+/*
     if (x == y)
             return true;
-                                                                                
+*/
     return std::abs(x - y) <=                                                   
         std::numeric_limits<float>::epsilon() * std::abs(x + y) * ulp;
 }
@@ -81,7 +82,7 @@ bool CommonMath::almostEqual(float x, float y, int ulp)
 float CommonMath::pdf(float x, float mu, float sigma)
 {
 
-    /// Apparently: inf - inf = -nan. Fix that here
+    /// Apparently: inf - inf = nan. Fix that here
     if ( ((x == std::numeric_limits<float>::infinity()) &&
           (mu == std::numeric_limits<float>::infinity())) ||  
          ((x == -std::numeric_limits<float>::infinity()) &&
