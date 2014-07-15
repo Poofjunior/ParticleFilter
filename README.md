@@ -39,3 +39,4 @@ visualization with my integrated graphics chip.
 
 ### TODO
 * Inkscape svg integration to convert an svg file to a map
+* Add Gaussian noise to laser scanner measurements
