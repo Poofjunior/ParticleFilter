@@ -65,7 +65,7 @@ bool CommonMath::almostEqual(float x, float y, int ulp)
 {
     // Compare all subnormal values (like infinity) exactly.
 /// OLD METHOD: slow!
-    assert((isnan(x) == false) && (isnan(x) == false));
+    assert((isnan(x) == false) && (isnan(y) == false));
 
     if (!std::isnormal(x) || !std::isnormal(y))                                 
         return x == y;                                                          
